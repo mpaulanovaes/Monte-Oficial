@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONTE R07 — Modelagem Geotécnica</title>
+<style>
+:root{--bg:#f2f3f2;--panel:#fff;--ink:#202927;--muted:#68716d;--line:#d9dfda;--earth:#806352;--accent:#b66a3c;--accent-dark:#874b2b;--danger:#b42318;--warn:#8a5b00;--soft:#f8f5f1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,Segoe UI,Arial,sans-serif}header{background:#242d2a;color:#fff;padding:22px clamp(16px,3vw,38px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-bottom:4px solid var(--accent)}header h1{font-size:clamp(20px,2.3vw,29px);margin:0;font-weight:750;letter-spacing:-.4px}header p{margin:5px 0 0;color:#c8d0cb}.tag{border:1px solid #68736d;border-radius:30px;padding:7px 12px;color:#e7ece8;font-size:12px}.layout{display:grid;grid-template-columns:minmax(320px,410px) minmax(0,1fr);gap:18px;padding:18px;max-width:1800px;margin:auto;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px #26342b0a;overflow:hidden}.panel-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.panel-head h2{font-size:16px;margin:0}.panel-head small{color:var(--muted)}.form-scroll{padding:16px;max-height:calc(100vh - 165px);overflow:auto}.section{border:1px solid var(--line);border-radius:9px;margin-bottom:12px;overflow:hidden}.section h3{margin:0;background:#f7f8f6;padding:10px 12px;font-size:13px;text-transform:uppercase;letter-spacing:.55px;color:#4b554f}.fields{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{min-width:0}.field.full{grid-column:1/-1}label{display:block;font-size:12px;font-weight:650;margin-bottom:5px;color:#3e4842}.hint{font-weight:400;color:var(--muted)}input,select{width:100%;min-width:0;border:1px solid #cbd3cd;border-radius:6px;padding:9px 10px;background:#fff;color:var(--ink);font:inherit;outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #b66a3c22}input.invalid,select.invalid{border-color:var(--danger);background:#fff8f7}.inline{display:flex;gap:7px;align-items:center}.inline>*{flex:1}.toggle{display:flex;gap:12px;align-items:center;padding:7px 0}.toggle label{display:flex;align-items:center;gap:6px;margin:0;font-weight:500}.toggle input{width:auto}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #cbd3cd;border-radius:7px;padding:10px 12px;font:inherit;font-weight:700;cursor:pointer;background:#fff;color:var(--ink)}.btn:hover{background:#f5f6f4}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn.primary:hover{background:var(--accent-dark)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.small{font-size:12px;padding:7px 9px}.form-actions{position:sticky;bottom:-16px;background:#ffffffef;backdrop-filter:blur(8px);padding:13px 0 2px;border-top:1px solid var(--line);margin-top:6px}.ifc-export-setting{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,190px);gap:4px 12px;align-items:center;margin-bottom:12px;padding:10px 12px;background:#f3f1e9;border:1px solid #d9ddcf;border-radius:8px}.ifc-export-setting label{font-size:12px;font-weight:750;color:#394438;margin:0}.ifc-export-setting select{max-width:190px}.ifc-export-setting .subnote{grid-column:1/-1;margin:0;font-size:11px}@media(max-width:560px){.ifc-export-setting{grid-template-columns:1fr}.ifc-export-setting select{max-width:none}}.status{font-size:12px;padding:10px 12px;border-radius:7px;margin:0 0 12px;display:none}.status.error{display:block;background:#fff0ee;color:#8d2017;border:1px solid #f3c2bd}.status.warn{display:block;background:#fff8e7;color:#765000;border:1px solid #ecd59a}.status.ok{display:block;background:#edf8ef;color:#245b31;border:1px solid #c2e5c9}.rightcol{display:grid;gap:16px}.viewer{height:510px;position:relative;background:linear-gradient(#f8faf8,#e9eeea);overflow:hidden}.viewer canvas{display:block;width:100%;height:100%}.viewer-message{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;color:#59645d;background:#f5f7f5d9;z-index:2}.viewer-message strong{display:block;font-size:17px;margin-bottom:6px}.viewer-top{position:absolute;top:12px;left:12px;right:12px;z-index:3;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;pointer-events:none}.viewer-top>*{pointer-events:auto}.view-buttons,.layers{display:flex;gap:5px;flex-wrap:wrap}.nav-speed{display:flex;align-items:center;gap:4px;padding:4px 6px;background:#ffffffed;border:1px solid #d6ddd7;border-radius:7px}.nav-speed span{font-size:11px;font-weight:700;color:#46514a;padding:0 4px}.nav-speed .btn{font-size:11px;padding:6px 8px}.nav-speed .btn.active{background:#e7efe9;border-color:#6f927a;color:#244f31}.view-buttons .btn,.layers label{background:#ffffffed;border:1px solid #d6ddd7;border-radius:6px;padding:7px 9px;font-size:11px}.layers label{display:flex;align-items:center;gap:5px;font-weight:600}.layers input{width:auto}.legend{position:absolute;bottom:10px;left:12px;z-index:2;background:#ffffffdc;border:1px solid #dce2dd;border-radius:7px;padding:8px 10px;font-size:11px;color:#59645d}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px}.stat{background:#f7f8f6;border:1px solid #e0e5e0;border-radius:8px;padding:12px}.stat span{display:block;color:var(--muted);font-size:11px}.stat strong{font-size:21px;display:block;margin-top:4px;letter-spacing:-.4px}.table-wrap{overflow:auto;padding:0 14px 14px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e5e9e5}th{color:#5e6861;font-size:11px;text-transform:uppercase;letter-spacing:.4px}td:last-child{text-align:right;font-variant-numeric:tabular-nums}.table-actions{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px;gap:12px;flex-wrap:wrap}.notice{margin:0 18px 18px;padding:12px 14px;border-left:4px solid var(--accent);background:#f9f5f0;color:#554b42;font-size:12px}.foot{max-width:1800px;margin:0 auto;padding:0 18px 24px;color:#6c756f;font-size:11px}.subnote{color:var(--muted);font-size:11px;margin-top:5px}.pill{font-size:10px;border-radius:20px;background:#f0e5dc;color:#75462b;padding:3px 7px}.muted{color:var(--muted)}.computed-value{font-size:13px}.property-panel{padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.property-panel .field.full{grid-column:1/-1}.property-panel input[type=color]{height:42px;padding:4px}.selected-tag{font-size:11px;color:#5b655e;background:#f4f6f4;border-radius:6px;padding:7px}
+.orientation-widget{width:126px;min-width:126px;height:126px;position:relative;display:flex;align-items:center;justify-content:center;perspective:420px;background:#ffffffdc;border:1px solid #d6ddd7;border-radius:9px;padding:8px;box-shadow:0 2px 7px #24352b12}
+.orientation-cube{position:relative;width:58px;height:58px;transform-style:preserve-3d;transform:rotateX(-25deg) rotateY(-35deg);transition:transform .18s ease}
+.cube-face{position:absolute;width:58px;height:58px;border:1px solid #8c9690;background:linear-gradient(145deg,#fff,#dce1de);color:#26332b;font:700 9px/1.1 Inter,Segoe UI,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:3px;cursor:pointer;box-shadow:inset 0 0 0 1px #ffffff80;backface-visibility:hidden}
+.cube-face:hover{background:#e7efe9;color:#244f31;border-color:#548363}
+.cube-front{transform:translateZ(29px)}.cube-back{transform:rotateY(180deg) translateZ(29px)}.cube-right{transform:rotateY(90deg) translateZ(29px)}.cube-left{transform:rotateY(-90deg) translateZ(29px)}.cube-top{transform:rotateX(90deg) translateZ(29px)}.cube-bottom{transform:rotateX(-90deg) translateZ(29px)}
+.orientation-cube{width:68px;height:68px;transform-origin:center center;transition:transform .28s ease}
+.cube-face{width:68px;height:68px;font-size:9px;pointer-events:auto}
+.cube-front{transform:translateZ(34px)}.cube-back{transform:rotateY(180deg) translateZ(34px)}.cube-right{transform:rotateY(90deg) translateZ(34px)}.cube-left{transform:rotateY(-90deg) translateZ(34px)}.cube-top{transform:rotateX(90deg) translateZ(34px)}.cube-bottom{transform:rotateX(-90deg) translateZ(34px)}
+.cube-edge{position:absolute;z-index:5;width:68px;height:12px;border:0!important;border-radius:0;background:transparent!important;opacity:0!important;box-shadow:none!important;cursor:pointer;padding:0;backface-visibility:hidden;transform-origin:center;}
+.cube-edge:hover{opacity:0!important;background:transparent!important;border-color:transparent!important}
+.cube-edge.edge-front-top{transform:translateY(-28px) translateZ(34px)}.cube-edge.edge-front-bottom{transform:translateY(28px) translateZ(34px)}.cube-edge.edge-front-left{width:12px;height:68px;transform:translateX(-28px) translateZ(34px)}.cube-edge.edge-front-right{width:12px;height:68px;transform:translateX(28px) translateZ(34px)}
+.cube-edge.edge-back-top{transform:rotateY(180deg) translateY(-28px) translateZ(34px)}.cube-edge.edge-back-bottom{transform:rotateY(180deg) translateY(28px) translateZ(34px)}.cube-edge.edge-back-left{width:12px;height:68px;transform:rotateY(180deg) translateX(-28px) translateZ(34px)}.cube-edge.edge-back-right{width:12px;height:68px;transform:rotateY(180deg) translateX(28px) translateZ(34px)}
+.cube-edge.edge-right-top{transform:rotateY(90deg) translateY(-28px) translateZ(34px)}.cube-edge.edge-right-bottom{transform:rotateY(90deg) translateY(28px) translateZ(34px)}.cube-edge.edge-left-top{transform:rotateY(-90deg) translateY(-28px) translateZ(34px)}.cube-edge.edge-left-bottom{transform:rotateY(-90deg) translateY(28px) translateZ(34px)}
+.cube-home{position:absolute;bottom:4px;left:4px;right:4px;border:0;background:transparent;color:#435048;font-size:10px;font-weight:650;cursor:pointer;padding:3px}.cube-home:hover{color:#245c35}
+.cube-arrows{position:absolute;inset:0;pointer-events:none;z-index:8}.cube-turn{position:absolute;width:22px;height:22px;padding:0;border:1px solid #cbd3cd;border-radius:50%;background:#fff;color:#344139;font-size:14px;line-height:18px;font-weight:800;cursor:pointer;pointer-events:auto;box-shadow:0 1px 3px #00000018}.cube-turn:hover{background:#e7efe9;border-color:#6f927a;color:#244f31}.cube-turn.left{left:2px;top:48px}.cube-turn.right{right:2px;top:48px}.cube-turn.up{top:2px;left:52px}.cube-turn.down{bottom:19px;left:52px}
+.orientation-widget{width:144px;min-width:144px;height:144px}
+@media(max-width:650px){.orientation-widget{transform:scale(.88);transform-origin:top left;margin-right:-14px}}
+
+.viewer canvas{cursor:crosshair}.layer-actions{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 12px}.layer-actions .btn{font-size:11px;padding:6px 8px}.color-choice{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:650}.color-choice input[type=color]{width:30px;height:28px;padding:2px;border:1px solid #cbd3cd;border-radius:6px;cursor:pointer}.selected-object-highlight{outline:2px solid #ffb000}@media(max-width:980px){.layout{grid-template-columns:1fr}.form-scroll{max-height:none}.viewer{height:420px}}@media(max-width:560px){.layout{padding:10px;gap:10px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.viewer{height:360px}header{padding:18px}.panel-head{align-items:flex-start}}
+
+/* Ajuste compacto dos controles de visibilidade das camadas */
+.viewer-top{align-items:flex-start}
+.layers{align-items:center;align-content:flex-start;gap:6px;max-width:100%;}
+.layers label{display:inline-flex;flex:0 0 auto;align-self:flex-start;align-items:center;justify-content:flex-start;gap:6px;width:auto;height:auto;min-height:32px;padding:5px 9px;margin:0;border-radius:6px;font-size:11px;line-height:1.2;white-space:nowrap}
+.layers input[type=checkbox]{appearance:auto;-webkit-appearance:checkbox;width:14px;height:14px;min-width:14px;margin:0;padding:0;flex:0 0 14px;box-shadow:none}
+@media(max-width:760px){.layers{max-width:100%;}.layers label{min-height:29px;padding:4px 7px;font-size:10px}.layers input[type=checkbox]{width:13px;height:13px;min-width:13px;flex-basis:13px}}
+
+
+/* Entrada editorial orgânica — SoloLab */
+:root{--welcome-cream:#f3f0e9;--welcome-ink:#242923;--welcome-muted:#73766c;--welcome-olive:#737b58;--welcome-clay:#b87958}
+.welcome-screen{background:var(--welcome-cream);color:var(--welcome-ink);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh;overflow:hidden}.welcome-nav{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(22px,6vw,92px);border-bottom:1px solid #dcd8ce}.brand-mark{display:flex;gap:11px;align-items:center;color:inherit;text-decoration:none;font-size:14px;font-weight:800;letter-spacing:1.8px}.brand-icon{width:36px;height:36px;border:1px solid #777d62;border-radius:50%;display:grid;place-items:center;color:#65704f;font-size:11px;letter-spacing:0}.brand-light{font-weight:400;color:#8b8b7e}.brand-mark small{display:block;font-size:8px;letter-spacing:1.2px;color:#818174;margin-top:3px}.nav-note,.eyebrow{font-size:10px;letter-spacing:1.8px;color:#777a6c;font-weight:700}.welcome-hero{display:grid;grid-template-columns:1fr 1fr;min-height:570px;padding:60px clamp(22px,6vw,92px) 70px;gap:5vw;align-items:center;max-width:1600px;margin:auto}.hero-copy{padding:18px 0}.eyebrow{display:flex;align-items:center;gap:10px}.eyebrow span{display:inline-block;width:24px;height:1px;background:var(--welcome-clay)}.hero-copy h1{font-size:clamp(40px,5.2vw,76px);line-height:.99;letter-spacing:-3px;font-weight:500;margin:28px 0 24px}.hero-copy h1 em,.details-intro h2 em{font-family:Georgia,serif;font-weight:400;color:var(--welcome-olive)}.hero-lede{font-size:15px;line-height:1.8;max-width:430px;color:#6b6d64}.hero-actions{display:flex;align-items:center;gap:18px;margin-top:30px;flex-wrap:wrap}.welcome-cta{border:0;background:#33382f;color:#fff;padding:15px 20px;font-size:12px;font-weight:700;letter-spacing:.2px;cursor:pointer;display:flex;align-items:center;gap:28px;transition:background .2s,transform .2s}.welcome-cta:hover{background:#68704f;transform:translateY(-2px)}.welcome-cta span{font-size:18px}.hero-caption{font-size:11px;color:#89897d}.hero-footnote{display:flex;align-items:center;gap:10px;margin-top:55px;font-size:9px;letter-spacing:1.5px;color:#7c7e72}.tiny-line{width:30px;height:1px;background:#b87958}.hero-art{position:relative;height:430px;min-width:0;background:#d8d8c8;overflow:hidden;isolation:isolate}.art-sun{position:absolute;width:150px;height:150px;border-radius:50%;background:#d5a780;top:42px;right:16%;opacity:.8}.terrain{position:absolute;inset:auto -5% 0;height:68%;clip-path:polygon(0 58%,25% 30%,43% 42%,65% 5%,100% 28%,100% 100%,0 100%)}.terrain-back{background:#a4a68a;bottom:0;transform:translateY(-34px);opacity:.75}.terrain-mid{background:#8c9271;clip-path:polygon(0 70%,30% 45%,49% 53%,72% 20%,100% 35%,100% 100%,0 100%)}.terrain-front{background:#6e7659;clip-path:polygon(0 56%,23% 36%,40% 43%,64% 0,100% 22%,100% 100%,0 100%);opacity:.93}.slope-face{position:absolute;z-index:3;width:80%;height:57%;right:-3%;bottom:0;background:linear-gradient(135deg,#c6b59a,#a28d70);clip-path:polygon(0 53%,72% 0,100% 15%,100% 100%,0 100%);border-top:2px solid #e7d8bf}.slope-grid{position:absolute;inset:15% 0 0;background-image:linear-gradient(27deg,transparent 48.5%,#f0e5d2 49%,#f0e5d2 50%,transparent 50.5%),linear-gradient(0deg,transparent 48.5%,#e9dcc9 49%,#e9dcc9 50%,transparent 50.5%);background-size:46px 38px;opacity:.7;transform:skewY(-24deg)}.nail{position:absolute;height:2px;width:43%;background:#555b48;transform:rotate(-24deg);left:28%;box-shadow:0 0 0 1px #ffffff30}.n1{top:26%}.n2{top:37%}.n3{top:48%}.n4{top:59%}.n5{top:70%}.n6{top:81%}.n7{top:92%}.n8{top:15%;left:43%;width:36%}.art-label{position:absolute;z-index:4;font-size:9px;letter-spacing:1.5px;color:#3c4336;border:1px solid #747b60;padding:8px 10px;background:#f0ede2d9}.label-top{top:22px;left:22px}.label-side{right:18px;top:46%;writing-mode:vertical-rl}.face-caption{position:absolute;bottom:18px;left:20px;color:#f7f1e5;font-size:8px;letter-spacing:1.5px;white-space:nowrap}.face-caption span{color:#e2a780;padding:0 5px}.art-index{position:absolute;z-index:4;left:22px;bottom:18px;font-size:11px;color:#4e5544;letter-spacing:1px}.art-index span{color:#a8a797;padding:0 4px}.welcome-details{background:#e8e5dc;padding:58px clamp(22px,6vw,92px);display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:28px;align-items:start}.details-intro h2{font-size:clamp(27px,3vw,42px);font-weight:500;line-height:1.08;letter-spacing:-1.5px;margin:18px 0}.feature-card{border-top:1px solid #c6c5b9;padding-top:17px;display:flex;gap:14px}.feature-no{font-size:10px;color:#a06d4d;letter-spacing:1px;padding-top:3px}.feature-card h3{font-size:15px;font-weight:600;margin:0 0 10px}.feature-card p{font-size:12px;line-height:1.7;color:#737469;margin:0}.welcome-footer{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:24px clamp(22px,6vw,92px);background:#30332e;color:#f1eee6;font-size:10px;letter-spacing:.5px}.welcome-footer button{border:0;background:transparent;color:#d6c6ae;font-size:10px;letter-spacing:1px;cursor:pointer}.welcome-footer button:hover{color:white}#appShell{display:none}#appShell header{border-bottom:0}#appShell .layout{padding-top:22px}
+@media(max-width:900px){.welcome-hero{grid-template-columns:1fr;gap:30px;padding-top:42px}.hero-art{height:350px}.welcome-details{grid-template-columns:1fr 1fr}.details-intro{grid-column:1/-1}.welcome-footer{flex-wrap:wrap}}
+@media(max-width:560px){.welcome-nav{height:70px}.nav-note{display:none}.welcome-hero{padding-top:28px;padding-bottom:40px}.hero-copy h1{letter-spacing:-1.8px}.hero-art{height:290px}.welcome-details{grid-template-columns:1fr;padding-top:38px;padding-bottom:38px;gap:22px}.details-intro{grid-column:auto}.welcome-footer{align-items:flex-start;flex-direction:column}.hero-footnote{margin-top:35px}}
+
+
+/* Identidade visual MONTE — paleta natural e linguagem técnica */
+:root{--bg:#eeeee7;--panel:#fffefa;--ink:#252a21;--muted:#747767;--line:#d7d8ca;--earth:#76634e;--accent:#b85f37;--accent-dark:#934627;--soft:#f4f0e7;--welcome-cream:#f0ede3;--welcome-ink:#262a21;--welcome-muted:#737767;--welcome-olive:#3f4938;--welcome-clay:#b85f37}
+body{background:var(--bg)}
+.welcome-nav{background:#f0ede3}.monte-brand{gap:12px;letter-spacing:0}.mini-mark{width:54px;height:43px;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:3.5;stroke:#737e5d}.mini-mark path:nth-child(3){stroke:#bd7448}.mini-mark path:nth-child(n+4){stroke:#33392e;stroke-width:4}
+.monte-word{font-size:24px;font-weight:600;letter-spacing:4px;color:#2c3027;line-height:1}.monte-word small{font-size:8px;letter-spacing:2px;font-weight:600;color:#77796b;margin-top:7px}
+.hero-copy h1{color:#272c23}.hero-copy h1 em,.details-intro h2 em{color:#65704d}.welcome-cta{background:#3f4938}.welcome-cta:hover{background:#5d6848}.hero-art.monte-hero-art{height:430px;background:radial-gradient(circle at 80% 12%,#46503d 0,#30372c 50%,#252c23 100%);padding:22px 24px;color:#e9e4d8;border:1px solid #5c644d;display:flex;flex-direction:column;justify-content:space-between}.hero-art-top,.hero-art-bottom{display:flex;justify-content:space-between;gap:12px;position:relative;z-index:2;color:#c6c9b4;font-size:9px;letter-spacing:1.6px}.terrain-logo{width:100%;height:calc(100% - 50px);min-height:0;filter:drop-shadow(0 5px 14px #00000020)}.welcome-details{background:#e4e2d7}.feature-card{border-color:#c6c7b9}.feature-no{color:#b85f37}.welcome-footer{background:#252c23}.welcome-footer button{color:#d9a47d}
+.app-header{background:#30382c;border-bottom:4px solid #b85f37!important;padding:17px clamp(16px,3vw,38px)!important}.app-brand{display:flex;align-items:center;gap:13px}.app-brand-icon{width:64px;height:54px;flex:0 0 64px;display:block;color:#e9e4d8}.app-brand-icon svg{width:100%;height:100%;display:block;overflow:visible}.app-brand-icon svg path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:3.2}.app-brand-icon svg path:nth-child(1){stroke:#8e9873}.app-brand-icon svg path:nth-child(2){stroke:#c9c6a7}.app-brand-icon svg path:nth-child(3){stroke:#d0a06d}.app-brand-icon svg path:nth-child(4){stroke:#bd7448}.app-brand-icon svg path:nth-child(n+5){stroke:#f0ede3;stroke-width:3.5}.app-header h1{font-family:Inter,Segoe UI,Arial,sans-serif;font-size:27px!important;letter-spacing:4px!important;font-weight:650!important;line-height:1.05}.app-header p{font-size:12px;color:#c7cbb9!important}.app-header .tag{border-color:#667058;color:#e5e5d7}
+.panel{border-radius:11px;border-color:#dedfd3}.panel-head{background:#fbfaf6}.section h3{background:#f1f0e8;color:#48503d}.btn.primary{background:#68734f;border-color:#68734f}.btn.primary:hover{background:#4e593d}.pill{background:#eee6d8;color:#8b4e2e}.notice{border-left-color:#b85f37;background:#f5efe5;color:#5e4c3d}.viewer{background:linear-gradient(#f2f0e7,#dfe2d7)}.nav-speed .btn.active{background:#e4e8d9;border-color:#737e5d;color:#3f4938}.view-buttons .btn:hover,.layers label:hover{border-color:#8b9674}
+@media(max-width:900px){.hero-art.monte-hero-art{height:350px}.terrain-logo{height:calc(100% - 45px)}}
+@media(max-width:560px){.monte-word{font-size:19px;letter-spacing:3px}.mini-mark{width:43px}.hero-art.monte-hero-art{height:290px;padding:15px}.terrain-logo{height:calc(100% - 40px)}.hero-art-top,.hero-art-bottom{font-size:8px;letter-spacing:1px}.app-header h1{font-size:20px!important}}
+
+
+/* Capa MONTE: versão limpa, sem o painel ilustrado lateral. */
+.welcome-hero{grid-template-columns:minmax(0,1fr);}
+.hero-copy{max-width:900px;}
+.hero-art{display:none!important;}
+@media(max-width:900px){.welcome-hero{grid-template-columns:minmax(0,1fr);}}
+</style>
+</head>
+<body>
+<section id="welcomeScreen" class="welcome-screen">
+  <nav class="welcome-nav"><a class="brand-mark monte-brand" href="#inicio" aria-label="MONTE - início"><svg class="mini-mark" viewBox="0 0 100 70" aria-hidden="true"><path d="M5 24 H24 C31 24 35 20 40 15 L52 5 H91"/><path d="M5 34 H28 C35 34 40 30 45 25 L55 15 H91"/><path d="M5 44 H30 C37 44 42 40 47 35 L58 25 H91"/><path d="M49 17 L84 32 M41 29 L76 44 M31 40 L65 56"/></svg><span class="monte-word">MONTE<small>MODELAGEM GEOTÉCNICA</small></span></a><span class="nav-note">FERRAMENTA BIM · ENGENHARIA GEOTÉCNICA</span></nav>
+  <div class="welcome-hero" id="inicio">
+    <div class="hero-copy"><p class="eyebrow"><span></span> DO PROJETO À COMPATIBILIZAÇÃO</p><h1>Transforme parâmetros<br>em um <em>modelo pronto</em><br>para explorar.</h1><p class="hero-lede">Configure uma contenção em solo grampeado, explore os elementos em 3D e gere um modelo IFC com quantitativos estimados para apoiar seu fluxo BIM.</p><div class="hero-actions"><button class="welcome-cta" id="enterApp">Começar um modelo <span>↗</span></button><span class="hero-caption">Sem complicação. Com mais clareza.</span></div><div class="hero-footnote"><span class="tiny-line"></span> MODELO 3D · QUANTITATIVOS · EXPORTAÇÃO IFC</div></div>
+  </div>
+  <section class="welcome-details"><div class="details-intro"><p class="eyebrow">UM FLUXO, TRÊS ETAPAS</p><h2>Da configuração<br>à <em>visualização.</em></h2></div><div class="feature-card"><span class="feature-no">01</span><div><h3>Defina os parâmetros</h3><p>Informe geometria, grampos, paramento, tela e drenagem conforme os dados do seu projeto.</p></div></div><div class="feature-card"><span class="feature-no">02</span><div><h3>Explore em 3D</h3><p>Inspecione os componentes, altere a aparência e confira a organização do modelo.</p></div></div><div class="feature-card"><span class="feature-no">03</span><div><h3>Confira e exporte</h3><p>Consulte os quantitativos calculados e gere os arquivos disponíveis para apoiar seu processo BIM.</p></div></div></section>
+  <footer class="welcome-footer"><span>MONTE <span class="brand-light">/ MODELAGEM GEOTÉCNICA</span></span><span>Ferramenta de apoio à modelagem · Verifique os dados antes de usar em projeto.</span><button id="enterAppFooter">IR PARA O GERADOR ↗</button></footer>
+</section>
+<div id="appShell">
+<header class="app-header"><div class="app-brand"><span class="app-brand-icon" aria-label="Símbolo MONTE: camadas do solo e grampos"><svg viewBox="0 0 100 70" role="img" aria-hidden="true"><path d="M5 24 H24 C31 24 35 20 40 15 L52 5 H91"/><path d="M5 34 H28 C35 34 40 30 45 25 L55 15 H91"/><path d="M5 44 H30 C37 44 42 40 47 35 L58 25 H91"/><path d="M5 54 H32 C39 54 44 50 49 45 L61 35 H91"/><path d="M49 17 L84 32 M41 29 L76 44 M31 40 L65 56"/></svg></span><div><h1>MONTE</h1><p>Modelagem geotécnica paramétrica · Solo grampeado</p></div></div><span class="tag">IFC · BIM · ENGENHARIA GEOTÉCNICA</span></header>
+<main class="layout">
+<section class="panel">
+ <div class="panel-head"><h2>Parâmetros do modelo</h2><small>Campos com * são obrigatórios</small></div>
+ <div class="form-scroll">
+  <div id="errors" class="status error"></div><div id="warnings" class="status warn"></div>
+  <form id="form" novalidate>
+   <div class="section"><h3>01 · Geometria do talude</h3><div class="fields">
+    <div class="field"><label for="height">Altura da contenção (m) *</label><input id="height" type="number" min="0.1" step="any" required></div>
+    <div class="field"><label for="length">Extensão da face (m) *</label><input id="length" type="number" min="0.6" step="any" required></div>
+    <div class="field"><label for="slopeDeg">Inclinação do paramento (°) *</label><input id="slopeDeg" type="number" min="45" max="90" step="any" required></div>
+    <div class="field"><label for="slopeRatio">Proporção H:V <span class="hint">(auto)</span></label><input id="slopeRatio" type="text" placeholder="ex.: 1:2" aria-label="Proporção horizontal para vertical"></div>
+    <div class="field"><label for="depth">Profundidade do bloco de solo (m) *</label><input id="depth" type="number" min="0.1" step="any" required></div>
+    <div class="field"><label for="base">Cota de base (m) *</label><input id="base" type="number" step="any" required></div>
+   </div></div>
+   <div class="section"><h3>02 · Paramento e tela</h3><div class="fields">
+    <div class="field"><label for="thickness">Espessura do concreto (cm) *</label><input id="thickness" type="number" min="1" step="any" required></div>
+    <div class="field"><label>Incluir tela? *</label><div class="toggle"><label><input type="radio" name="meshOn" value="sim" checked> Sim</label><label><input type="radio" name="meshOn" value="nao"> Não</label></div></div>
+    <div class="field"><label for="meshDia">Diâmetro do fio (mm)</label><input id="meshDia" type="number" min="1" step="any"></div>
+    <div class="field"><label for="meshSpacing">Malha (cm × cm)</label><input id="meshSpacing" type="text" placeholder="ex.: 10 x 10"></div>
+   </div></div>
+   <div class="section"><h3>03 · Grampos</h3><div class="fields">
+    <div class="field"><label for="nailLength">Comprimento (m) *</label><input id="nailLength" type="number" min="0.1" step="any" required></div>
+    <div class="field"><label for="nailAngle">Inclinação abaixo da horizontal (°) *</label><input id="nailAngle" type="number" min="0" max="89" step="any" required></div>
+    <div class="field"><label for="barDia">Diâmetro da barra (mm) *</label><select id="barDia" required><option value="">Selecione…</option><option>16</option><option>20</option><option>25</option><option>32</option><option value="outro">Outro</option></select></div>
+    <div class="field" id="barOtherWrap" hidden><label for="barOther">Outro diâmetro (mm) *</label><input id="barOther" type="number" min="1" step="any"></div>
+    <div class="field"><label for="holeDia">Diâmetro do furo/bainha (mm) *</label><input id="holeDia" type="number" min="1" step="any" required></div>
+    <div class="field"><label for="spacingH">Espaçamento horizontal (m) *</label><input id="spacingH" type="number" min="0.01" step="any" required></div>
+    <div class="field"><label for="spacingV">Espaçamento vertical (m) *</label><input id="spacingV" type="number" min="0.01" step="any" required></div>
+    <div class="field"><label for="verticalOffsetCm">Afastamento dos grampos verticais da tela (cm)</label><input id="verticalOffsetCm" type="number" min="1" max="100" step="1" value="15"><div class="subnote">Distância perpendicular à tela; ajuste conforme o detalhe executivo.</div></div>
+    <div class="field"><label for="rowCount">Quantidade de fileiras de grampos inclinados *</label><input id="rowCount" type="number" min="1" max="30" step="1" value="3" required></div>
+    <div class="field full"><label for="rowSpacingCm">Cotas verticais por trecho (cm) *</label><textarea id="rowSpacingCm" rows="2" placeholder="Ex.: 10, 100, 100, 40" required>10, 100, 100, 40</textarea><div class="subnote">Informe da base para cima: base → 1ª fileira, distâncias entre fileiras e última fileira → topo. Para 3 fileiras, são 4 valores. A soma deve ser igual à altura da contenção.</div></div>
+    <div class="field"><label for="layoutType">Disposição *</label><select id="layoutType" required><option value="alinhada">Alinhada</option><option value="quincuncio">Quincôncio (desencontrada)</option></select></div>
+    <div class="field"><label for="steel">Tipo de aço *</label><select id="steel" required><option value="">Selecione…</option><option>CA-50</option><option>CA-60</option><option value="outro">Outro</option></select></div>
+    <div class="field" id="steelOtherWrap" hidden><label for="steelOther">Outro tipo de aço *</label><input id="steelOther" type="text"></div>
+   </div><div style="padding:0 12px 12px"><h4 style="margin:4px 0 8px;font-size:12px;color:#4b554f">Cabeça do grampo · placa de apoio</h4><div class="fields" style="padding:0">
+    <div class="field"><label for="plateWidth">Largura da placa (mm)</label><input id="plateWidth" type="number" min="20" step="any" value="150"></div>
+    <div class="field"><label for="plateHeight">Altura da placa (mm)</label><input id="plateHeight" type="number" min="20" step="any" value="150"></div>
+    <div class="field"><label for="plateThickness">Espessura da placa (mm)</label><input id="plateThickness" type="number" min="3" step="any" value="12"></div>
+    <div class="field full"><span class="subnote">O furo acompanha automaticamente o diâmetro do grampo. Porca hexagonal e trecho roscado são gerados automaticamente.</span></div>
+    <div class="field"><label for="plateColor">Cor da placa e fixações</label><input id="plateColor" type="color" value="#1976d2"></div>
+   </div><p class="subnote">Valores iniciais ilustrativos para visualização; confirme as dimensões com o detalhe executivo antes de usar em projeto.</p></div></div>
+   <div class="section"><h3>04 · Drenagem (opcional)</h3><div class="fields">
+    <div class="field full"><label>Incluir barbacãs?</label><div class="toggle"><label><input type="radio" name="drainOn" value="sim"> Sim</label><label><input type="radio" name="drainOn" value="nao" checked> Não</label></div></div>
+    <div class="field"><label for="drainDia">Diâmetro (mm)</label><input id="drainDia" type="number" min="1" step="any"></div>
+    <div class="field"><label for="drainLength">Comprimento (m)</label><input id="drainLength" type="number" min="0.01" step="any"></div>
+    <div class="field full"><label for="drainSpacing">Espaçamento aproximado (m)</label><input id="drainSpacing" type="number" min="0.01" step="any"></div>
+   </div></div>
+   <div class="section"><h3>05 · Solo e visualização</h3><div class="fields">
+    <div class="field full"><label for="soilType">Tipo de solo *</label><select id="soilType" required><option value="">Selecione…</option><option value="Aterro">Aterro</option><option value="Argila vermelha / laterítica">Argila vermelha / laterítica</option><option value="Argila cinza">Argila cinza</option><option value="Silte">Silte</option><option value="Areia">Areia</option><option value="Solo residual">Solo residual</option><option value="Rocha alterada">Rocha alterada</option></select></div>
+    <div class="field"><label for="soilColor">Cor do solo *</label><input id="soilColor" type="color" value="#7f6352"></div>
+    <div class="field"><label for="transparency">Transparência do solo (%)</label><input id="transparency" type="range" min="10" max="90" value="48"><div class="subnote"><span id="transparencyVal">48%</span> · maior valor = mais transparente</div></div>
+   </div></div>
+   <div class="section"><h3>06 · Dados do projeto</h3><div class="fields">
+    <div class="field full"><label for="projectName">Nome do projeto *</label><input id="projectName" type="text" required></div>
+    <div class="field full"><label for="locationName">Nome do local *</label><input id="locationName" type="text" required></div>
+    <div class="field full"><label for="author">Autor / responsável pelo modelo *</label><input id="author" type="text" required></div>
+    <div class="field"><label for="units">Unidade</label><input id="units" value="Metros" readonly></div>
+   </div></div>
+   <div class="section"><h3>07 · Quantitativos complementares calculados</h3>
+    <p class="subnote" style="padding:12px;margin:0">Esta seção é automática: os valores são estimados a partir dos parâmetros das seções 01 a 06 e da geometria gerada. As hipóteses adotadas ficam indicadas junto aos resultados.</p>
+    <div id="complementaryResults" class="fields" style="padding:12px"><div class="field full"><span class="subnote">Preencha os parâmetros para calcular os quantitativos complementares.</span></div></div>
+   </div>
+   <div class="form-actions"><div class="ifc-export-setting"><label for="schema">Formato do arquivo IFC</label><select id="schema" aria-describedby="schemaHelp"><option value="IFC2X3">IFC2X3</option><option value="IFC4">IFC4</option></select><p id="schemaHelp" class="subnote">Selecione o esquema que será utilizado ao gerar o arquivo IFC.</p></div><div class="actions"><button id="generateBtn" class="btn primary" type="button" disabled>Gerar IFC</button><button id="saveConfig" class="btn" type="button">Salvar configuração</button><button id="loadConfig" class="btn" type="button">Carregar JSON</button><input id="configFile" type="file" accept=".json,application/json" hidden><button id="clearBtn" class="btn" type="button">Limpar</button></div><p class="subnote">Preencha os campos obrigatórios para habilitar a exportação.</p></div>
+  </form>
+ </div>
+</section>
+<section class="rightcol">
+ <div class="panel">
+  <div class="panel-head"><h2>Pré-visualização 3D</h2><small id="previewState">Aguardando parâmetros</small></div>
+  <div class="viewer" id="viewer"><div class="viewer-message" id="viewerMessage"><div><strong>Modelo aguardando dados</strong>Preencha os campos obrigatórios para visualizar a contenção em 3D.</div></div>
+   <div class="viewer-top"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start"><div class="orientation-widget" aria-label="Cubo de orientação 3D">
+ <div class="orientation-cube">
+  <button class="cube-face cube-front" data-cube-view="front" title="Vista frontal">FRENTE</button>
+  <button class="cube-face cube-back" data-cube-view="back" title="Vista posterior">TRÁS</button>
+  <button class="cube-face cube-right" data-cube-view="right" title="Vista direita">DIREITA</button>
+  <button class="cube-face cube-left" data-cube-view="left" title="Vista esquerda">ESQUERDA</button>
+  <button class="cube-face cube-top" data-cube-view="top" title="Vista superior">TOPO</button>
+  <button class="cube-face cube-bottom" data-cube-view="bottom" title="Vista inferior">BASE</button>
+  <button class="cube-edge edge-front-top" data-cube-view="frontTop" title="Aresta frente + topo" aria-label="Vista pela aresta frontal superior"></button>
+  <button class="cube-edge edge-front-bottom" data-cube-view="frontBottom" title="Aresta frente + base" aria-label="Vista pela aresta frontal inferior"></button>
+  <button class="cube-edge edge-front-left" data-cube-view="frontLeft" title="Aresta frente + esquerda" aria-label="Vista pela aresta frontal esquerda"></button>
+  <button class="cube-edge edge-front-right" data-cube-view="frontRight" title="Aresta frente + direita" aria-label="Vista pela aresta frontal direita"></button>
+  <button class="cube-edge edge-back-top" data-cube-view="backTop" title="Aresta trás + topo" aria-label="Vista pela aresta posterior superior"></button>
+  <button class="cube-edge edge-back-bottom" data-cube-view="backBottom" title="Aresta trás + base" aria-label="Vista pela aresta posterior inferior"></button>
+  <button class="cube-edge edge-back-left" data-cube-view="backLeft" title="Aresta trás + esquerda" aria-label="Vista pela aresta posterior esquerda"></button>
+  <button class="cube-edge edge-back-right" data-cube-view="backRight" title="Aresta trás + direita" aria-label="Vista pela aresta posterior direita"></button>
+  <button class="cube-edge edge-right-top" data-cube-view="rightTop" title="Aresta direita + topo" aria-label="Vista pela aresta direita superior"></button>
+  <button class="cube-edge edge-right-bottom" data-cube-view="rightBottom" title="Aresta direita + base" aria-label="Vista pela aresta direita inferior"></button>
+  <button class="cube-edge edge-left-top" data-cube-view="leftTop" title="Aresta esquerda + topo" aria-label="Vista pela aresta esquerda superior"></button>
+  <button class="cube-edge edge-left-bottom" data-cube-view="leftBottom" title="Aresta esquerda + base" aria-label="Vista pela aresta esquerda inferior"></button>
+ </div>
+ <div class="cube-arrows" aria-label="Girar orientação do cubo"><button class="cube-turn left" type="button" data-cube-turn="left" title="Girar para a esquerda" aria-label="Girar para a esquerda">‹</button><button class="cube-turn right" type="button" data-cube-turn="right" title="Girar para a direita" aria-label="Girar para a direita">›</button><button class="cube-turn up" type="button" data-cube-turn="up" title="Girar para cima" aria-label="Girar para cima">⌃</button><button class="cube-turn down" type="button" data-cube-turn="down" title="Girar para baixo" aria-label="Girar para baixo">⌄</button></div>
+ <button class="cube-home" type="button" data-cube-view="iso" title="Vista isométrica">⌂ Isométrica</button>
+</div><div class="nav-speed" role="group" aria-label="Sensibilidade da navegação"><span>Navegação</span><button type="button" class="btn active" data-nav-speed="1" aria-pressed="true" title="Movimento lento e preciso">1x · Lenta</button><button type="button" class="btn" data-nav-speed="2" aria-pressed="false" title="Movimento moderado">2x · Média</button><button type="button" class="btn" data-nav-speed="3" aria-pressed="false" title="Movimento mais rápido">3x · Rápida</button></div></div><div class="layers"><label><input type="checkbox" data-layer="soil" checked> Solo</label><label><input type="checkbox" data-layer="wall" checked> Concreto</label><label><input type="checkbox" data-layer="mesh" checked> Tela</label><label><input type="checkbox" data-layer="nails" checked> Grampos inclinados</label><label><input type="checkbox" data-layer="vertical" checked> Grampos verticais</label><label><input type="checkbox" data-layer="hardware" checked> Placas/porcas</label><label><input type="checkbox" data-layer="drains" checked> Barbacãs</label></div></div>
+   <div class="legend">Clique em um elemento para ver propriedades · arraste: orbitar · roda: zoom · botão direito: pan · ajuste a sensibilidade em Navegação</div>
+  </div>
+ </div>
+ <div class="panel"><div class="panel-head"><h2>Aparência do modelo</h2><button class="btn small" id="resetAppearance" type="button">Resetar aparência</button></div>
+ </div>
+ <div class="panel"><div class="panel-head"><h2>Elemento selecionado</h2><small id="selectedElementLabel">Nenhum selecionado</small></div>
+  <div class="property-panel" id="elementProperties"><div class="field full selected-tag">Clique em uma peça do modelo 3D para consultar suas propriedades e personalizar sua cor. Pressione Esc para cancelar a seleção.</div></div>
+ </div>
+ <div class="panel"><div class="panel-head"><h2>Quantitativos automáticos*</h2><span class="pill">Atualização automática</span></div><div class="stats">
+  <div class="stat"><span>Total de grampos (inclinados + verticais)</span><strong id="statNails">—</strong></div><div class="stat"><span>Comprimento de barras</span><strong id="statBars">—</strong></div><div class="stat"><span>Peso estimado de aço</span><strong id="statWeight">—</strong></div><div class="stat"><span>Volume de concreto</span><strong id="statConcrete">—</strong></div>
+ </div><div class="table-wrap"><table><thead><tr><th>Indicador</th><th>Unidade</th><th>Quantidade</th></tr></thead><tbody id="quantityRows"><tr><td colspan="3" class="muted">Os quantitativos aparecerão após o preenchimento.</td></tr></tbody></table></div><div class="table-actions"><span class="subnote">* Os quantitativos são estimativas geradas com base nos parâmetros informados. Confira os dados de entrada, as premissas adotadas e os resultados antes de utilizá-los no projeto executivo ou para orçamento.</span><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="csvBtn" disabled>Exportar CSV</button><button class="btn small primary" id="xlsxBtn" disabled>Exportar relatório Excel (.xlsx)</button></div></div></div>
+ <div class="panel"><div class="panel-head"><h2>Validação do modelo</h2><small>Verificações geométricas</small></div><div style="padding:14px 16px" id="validationSummary" class="muted">Preencha os dados para verificar consistência e avisos.</div><p class="notice">Ferramenta de modelagem e compatibilização BIM. <strong>Não substitui o dimensionamento geotécnico</strong>, a análise de estabilidade, nem o projeto e a responsabilidade de engenheiro habilitado. Verificar requisitos aplicáveis, incluindo a ABNT NBR 16920-2, antes de utilizar o modelo em projeto.</p></div>
+</section>
+</main>
+<div class="foot">Gerador IFC de Solo Grampeado · Ferramenta de modelagem e estimativas de quantitativos. A compatibilização será feita em software BIM externo. Revise a geometria, os metadados e a importação no software de destino antes de uso profissional.</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const soilColors = {
+ 'Aterro':'#7f6352','Argila vermelha / laterítica':'#96462d','Argila cinza':'#787873',
+ 'Silte':'#aa966e','Areia':'#d2b982','Solo residual':'#8c6946','Rocha alterada':'#6e645f'
+};
+const requiredIds = ['height','length','slopeDeg','depth','base','thickness','nailLength','nailAngle','barDia','holeDia','spacingH','spacingV','rowCount','rowSpacingCm','layoutType','steel','soilType','projectName','locationName','author','schema'];
+let scene, camera, renderer, controls, modelGroup, layerGroups = {}, currentData = null, resizeObserver;
+let raycaster, pointer, selectedObject=null, selectedOriginalMaterial=null;
+const defaultCategoryColors={soil:0x7f6352,wall:0x777777,mesh:0xaab5b0,nails:0x6c7778,vertical:0x6c7778,hardware:0x1976d2,drains:0x4b8da0};
+let selectedObjects=[]; const selectionOriginals=new Map();
+const categoryColors={soil:0x7f6352,wall:0x777777,mesh:0xaab5b0,nails:0x6c7778,vertical:0x6c7778,hardware:0x1976d2,drains:0x4b8da0};
+const elementColorOverrides={};
+function num(id){const v=parseFloat($(id).value);return Number.isFinite(v)?v:NaN}
+function val(id){return $(id).value.trim()}
+function checked(name){return document.querySelector(`input[name="${name}"]:checked`)?.value || 'nao'}
+function barDiameter(){return val('barDia')==='outro'?num('barOther'):num('barDia')}
+function steelName(){return val('steel')==='outro'?val('steelOther'):val('steel')}
+function fmt(n,d=2){return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}):'—'}
+function setError(msg){const el=$('errors');el.textContent=msg?'Existem campos obrigatórios vazios ou valores inválidos. Confira os campos destacados.':' ';el.className=msg?'status error':'status'}
+function setWarnings(msgs){const el=$('warnings');el.textContent=msgs.join(' · ');el.className=msgs.length?'status warn':'status'}
+function getData(){
+ return {height:num('height'),length:num('length'),slopeDeg:num('slopeDeg'),depth:num('depth'),base:num('base'),thickness:num('thickness')/100,
+ meshOn:checked('meshOn')==='sim',meshDia:num('meshDia')/1000,meshSpacing:val('meshSpacing'),nailLength:num('nailLength'),nailAngle:num('nailAngle'),barDia:barDiameter()/1000,barDiaMm:barDiameter(),holeDia:num('holeDia')/1000,spacingH:num('spacingH'),spacingV:num('spacingV'),verticalOffset:num('verticalOffsetCm')/100,rowCount:Math.max(1,Math.floor(num('rowCount'))),rowSpacingCm:val('rowSpacingCm').split(/[,;\s]+/).filter(Boolean).map(x=>parseFloat(x.replace(',','.'))),layoutType:val('layoutType'),steel:steelName(),drainOn:checked('drainOn')==='sim',drainDia:num('drainDia')/1000,drainLength:num('drainLength'),drainSpacing:num('drainSpacing'),soilType:val('soilType'),soilColor:val('soilColor'),transparency:num('transparency')/100,plateWidth:num('plateWidth')/1000,plateHeight:num('plateHeight')/1000,plateThickness:num('plateThickness')/1000,plateHole:barDiameter()/1000,nutWidth:Math.max(barDiameter()*1.8,30)/1000,nutHeight:Math.max(barDiameter()*.7,12)/1000,threadLength:Math.max(barDiameter()*2.5,45)/1000,plateColor:val('plateColor'),projectName:val('projectName'),locationName:val('locationName'),author:val('author'),schema:val('schema')};
+}
+function isVisibleValid(d){return requiredIds.every(id=>{const e=$(id);return e.value.trim()!=='' && (!e.checkValidity || e.checkValidity())}) && Number.isFinite(d.barDiaMm) && d.barDiaMm>0 && (val('barDia')!=='outro'||num('barOther')>0) && (val('steel')!=='outro'||val('steelOther')!=='') && (!d.meshOn||(num('meshDia')>0&&val('meshSpacing')!=='')) && (!d.drainOn||(d.drainDia>0&&d.drainLength>0&&d.drainSpacing>0));}
+function validate(d,mark=true){
+ const errors=[], warnings=[];
+ const fields=['height','length','slopeDeg','depth','base','thickness','nailLength','nailAngle','barDia','holeDia','spacingH','spacingV','rowCount','rowSpacingCm','layoutType','steel','soilType','projectName','locationName','author','schema'];
+ fields.forEach(id=>$(id).classList.remove('invalid'));
+ requiredIds.forEach(id=>{const e=$(id);if(!e.value.trim()||!e.checkValidity()){if(mark)e.classList.add('invalid');errors.push(`${e.previousElementSibling?.textContent.replace(' *','')||id}: campo obrigatório ou valor inválido.`)}});
+ if(val('barDia')==='outro'&&!(num('barOther')>0)){if(mark)$('barOther').classList.add('invalid');errors.push('Informe um diâmetro de barra válido.')}
+ if(val('steel')==='outro'&&!val('steelOther')){if(mark)$('steelOther').classList.add('invalid');errors.push('Informe o tipo de aço personalizado.')}
+ if(checked('meshOn')==='sim'&&(!(num('meshDia')>0)||!val('meshSpacing'))){errors.push('Informe diâmetro e malha da tela, ou desative a tela.')}
+ if(checked('drainOn')==='sim'&&(!(num('drainDia')>0)||!(num('drainLength')>0)||!(num('drainSpacing')>0)))errors.push('Informe diâmetro, comprimento e espaçamento dos barbacãs.');
+ if(errors.length){return {errors:[...new Set(errors)],warnings};}
+ if(d.spacingH<=0||d.spacingV<=0)errors.push('Os espaçamentos horizontal e vertical devem ser maiores que zero.');
+ if(d.nailLength>d.depth)errors.push('O grampo é mais longo que a profundidade do bloco de solo.');
+ if(d.slopeDeg<45||d.slopeDeg>90)errors.push('A inclinação do paramento deve estar entre 45° e 90° em relação à horizontal.');
+ if(!Number.isInteger(num('rowCount'))||d.rowCount<1||d.rowCount>30)errors.push('A quantidade de fileiras deve ser um número inteiro entre 1 e 30.');
+ if(d.rowSpacingCm.length!==d.rowCount+1)errors.push(`Para ${d.rowCount} fileiras, informe ${d.rowCount+1} cotas: base à primeira, entre fileiras e última ao topo.`);
+ if(d.rowSpacingCm.some(x=>!Number.isFinite(x)||x<=0))errors.push('Todas as cotas verticais devem ser maiores que zero.');
+ if(d.rowSpacingCm.length===d.rowCount+1&&d.rowSpacingCm.every(x=>Number.isFinite(x)&&x>0)&&Math.abs(d.rowSpacingCm.reduce((a,b)=>a+b,0)/100-d.height)>0.02)warnings.push(`A soma das cotas verticais (${fmt(d.rowSpacingCm.reduce((a,b)=>a+b,0)/100)} m) difere da altura informada (${fmt(d.height)} m). Confira as medidas.`);
+ if(d.nailAngle<5||d.nailAngle>20)warnings.push('Inclinação dos grampos fora da faixa usual de 5°–20°; confirme com o projeto geotécnico.');
+ if(!(d.plateWidth>0&&d.plateHeight>0&&d.plateThickness>0))errors.push('Confira as dimensões da placa de apoio.')
+ if(d.spacingH>2||d.spacingV>2)warnings.push('Espaçamento superior a 2,0 m; confirme a adequação ao dimensionamento.');
+ if(d.nailLength<.5*d.height)warnings.push('Comprimento do grampo menor que 0,5 × a altura da contenção.');
+ if(d.depth<d.nailLength+1)warnings.push('Profundidade do bloco de solo menor que comprimento do grampo + 1 m.');
+ return {errors,warnings};
+}
+function layout(d){
+ const rows=[], cols=[];
+ // Vista frontal do projeto executivo do Talude 2: três fileiras de grampos frontais (R1–R180).
+ // Os grampos verticais (RV) são gerados separadamente, conforme comprimento e espaçamento informados.
+ let z=0;
+ for(let i=0;i<d.rowCount;i++){z+=(d.rowSpacingCm[i]||0)/100;rows.push(z);}
+ // Fileiras definidas pelas cotas acumuladas a partir da base; a última cota representa a distância da última fileira ao topo.
+ for(let x=.3;x<=d.length-.3+1e-8;x+=d.spacingH) cols.push(x);
+ const nails=[];
+ rows.forEach((z,ri)=>cols.forEach((x,ci)=>{const xx=x+(d.layoutType==='quincuncio'&&ri%2?d.spacingH/2:0);if(xx<=d.length-.3+1e-8)nails.push({x:xx,z,ri:ri+1,ci:ci+1})}));
+ return {rows,cols,nails};
+}
+function verticalNailPositions(length, spacing){
+  // Distribuição paramétrica dos grampos verticais ao longo do comprimento da contenção.
+  // Regra: manter uma faixa livre de um espaçamento nominal em cada extremidade;
+  // distribuir os eixos restantes com o espaçamento informado, centrados no comprimento.
+  // Assim, L=60 m e e=1 m resulta em 59 posições (de -29 m a +29 m),
+  // mas a quantidade muda automaticamente quando L ou e mudam.
+  const L=Number(length);
+  const rawSpacing=Number(spacing);
+  if(!Number.isFinite(L)||L<=0||!Number.isFinite(rawSpacing)||rawSpacing<=0)return [];
+  const step=Math.max(.25,rawSpacing);
+  const count=Math.max(0,Math.floor((L+1e-8)/step)-1);
+  if(count===0)return [];
+  const span=(count-1)*step;
+  const first=-span/2;
+  return Array.from({length:count},(_,i)=>Number((first+i*step).toFixed(6)));
+}
+function quantities(d,l){
+  const frontNails=l.nails.length;
+  const verticalSpacing=Math.max(.25,d.spacingH);
+  const verticalPositions=verticalNailPositions(d.length,verticalSpacing);
+  const verticalNails=verticalPositions.length;
+  const totalNails=frontNails+verticalNails;
+  const frontLength=frontNails*d.nailLength;
+  const verticalLength=verticalNails*d.nailLength;
+  const total=frontLength+verticalLength;
+  const weight=total*(d.barDiaMm**2)*.00617;
+  const faceArea=d.length*d.height/Math.sin(d.slopeDeg*Math.PI/180);
+  const concrete=faceArea*d.thickness, meshArea=d.meshOn?faceArea:0;
+  // Mesma malha de distribuição usada na geração dos barbacãs no preview e no IFC.
+  let drainCols=0,drainRows=0,drains=0;
+  if(d.drainOn){
+    drainCols=Math.max(1,Math.floor(d.length/d.drainSpacing)-1);
+    drainRows=Math.max(1,Math.floor((d.height-.5*d.drainSpacing)/d.drainSpacing));
+    drains=drainCols*drainRows;
+  }
+  const totalDrainLength=drains*d.drainLength;
+  const drill=Math.PI*(d.holeDia/2)**2*total;
+  const q=[
+  {name:'Número de grampos inclinados',unit:'un.',value:frontNails,note:'Contagem da malha frontal gerada'},
+  {name:'Número de grampos verticais',unit:'un.',value:verticalNails,note:`Distribuição paramétrica centrada; mantém uma faixa livre de um espaçamento nominal em cada extremidade. Espaçamento informado: ${fmt(verticalSpacing)} m.`},
+  {name:'Número total de grampos (inclinados + verticais)',unit:'un.',value:totalNails,note:'Soma dos grampos inclinados e dos grampos verticais'},
+  {name:'Comprimento de barras dos grampos inclinados',unit:'m',value:frontLength,note:'Número de grampos inclinados × comprimento informado'},
+  {name:'Comprimento de barras dos grampos verticais',unit:'m',value:verticalLength,note:'Número de grampos verticais × comprimento informado'},
+  {name:'Comprimento total de barras dos grampos',unit:'m',value:total,note:'Soma dos comprimentos de barras inclinadas e verticais'},
+  {name:'Peso estimado de aço dos grampos',unit:'kg',value:weight,note:'Considera grampos inclinados e verticais; coeficiente teórico 0,00617 × diâmetro² (mm)'},
+  {name:'Área do paramento',unit:'m²',value:faceArea,note:'Área inclinada estimada'},
+  {name:'Volume de concreto projetado',unit:'m³',value:concrete,note:'Área do paramento × espessura'},
+  {name:'Área de tela',unit:'m²',value:meshArea,note:d.meshOn?'Área do paramento, sem sobreposições/perdas':'Tela desativada'},
+  {name:'Número estimado de barbacãs',unit:'un.',value:drains,note:d.drainOn?`Contagem da malha gerada no modelo 3D (${drainCols} por ${drainRows})`:'Drenagem desativada'},
+  {name:'Comprimento total estimado de barbacãs',unit:'m',value:totalDrainLength,note:d.drainOn?`Número de barbacãs × comprimento informado (${fmt(d.drainLength)} m/un.)`:'Drenagem desativada'},
+  {name:'Volume de perfuração dos grampos',unit:'m³',value:drill,note:'Seção circular do furo × comprimento total dos grampos inclinados e verticais'}];
+  const add=(name,unit,value,note)=>q.push({name,unit,value,note});
+  const excavation=d.length*d.height*d.depth;
+  const stages=Math.max(1,l.rows.length);
+  const bulking=1.25;
+  add('Volume estimado de escavação','m³',excavation,'Aproximação prismática: comprimento × altura × profundidade do bloco; conferir com a geometria real do corte');
+  add('Número estimado de etapas','etapas',stages,'Adotada uma etapa por linha de grampos inclinados; não substitui plano executivo');
+  add('Escavação média por etapa','m³/etapa',excavation/stages,'Volume estimado dividido pelo número estimado de etapas');
+  add('Fator de empolamento adotado','×',bulking,'Hipótese preliminar fixa de 1,25; ajustar conforme solo e especificação');
+  add('Volume estimado de bota-fora','m³',excavation*bulking,'Volume de escavação × fator de empolamento 1,25');
+  if(d.meshOn){
+    let meshSpacingM=NaN;
+    const m=String(d.meshSpacing||'').match(/[0-9]+(?:[.,][0-9]+)?/);
+    if(m) meshSpacingM=parseFloat(m[0].replace(',','.'))/100;
+    const dia=d.meshDia; let meshMass=NaN;
+    if(dia>0&&meshSpacingM>0) meshMass=2*((dia*dia*7850*Math.PI/4)/meshSpacingM);
+    if(Number.isFinite(meshMass)) add('Peso estimado da tela','kg',meshArea*meshMass,`Estimativa teórica de fios nas duas direções; massa aproximada ${fmt(meshMass)} kg/m², sem sobreposições/perdas`);
+    else add('Peso estimado da tela','kg',NaN,'Não foi possível interpretar o espaçamento da tela; verificar formato informado');
+  } else add('Peso estimado da tela','kg',0,'Tela desativada');
+  const grout=Math.PI*(d.holeDia/2)**2*total*1.10;
+  add('Volume teórico de calda de injeção','m³',grout,'Furos cilíndricos × comprimento total dos grampos inclinados e verticais, com 10% de perdas; consumo real pode ser maior');
+  add('Perdas de calda adotadas','%',10,'Hipótese preliminar fixa, não especificação de obra');
+  add('Acessórios (placa + porca) — grampos inclinados','un.',frontNails*2,'Estimativa de 2 peças por grampo inclinado; não considera acessórios específicos dos grampos verticais');
+  add('Quantidade estimada de DHP/barbacãs','un.',drains,'Mesma quantidade calculada para os barbacãs representados no modelo 3D');
+  add('Comprimento total estimado de DHP/barbacãs','m',totalDrainLength,'Quantidade estimada de barbacãs × comprimento informado');
+  add('Área estimada de geocomposto','m²',d.drainOn?faceArea:0,'Adotada área igual ao paramento quando drenagem está ativada; confirmar extensão, sobreposições e detalhamento');
+  add('Ensaios de arrancamento — referência preliminar','un.',Math.ceil(totalNails*0.05),'Estimativa ilustrativa de 5% do total de grampos, arredondada para cima; não é critério normativo e deve ser substituída pelo plano de ensaios do projeto');
+  return q;
+}
+function updateQuantities(d,l){
+ const q=quantities(d,l);$('statNails').textContent=q[2].value.toLocaleString('pt-BR');$('statBars').textContent=fmt(q[5].value)+' m';$('statWeight').textContent=fmt(q[6].value)+' kg';$('statConcrete').textContent=fmt(q[8].value)+' m³';
+ $('quantityRows').innerHTML=q.map(x=>`<tr><td>${x.name}</td><td>${x.unit}</td><td>${Number.isFinite(x.value)?fmt(x.value,['un.','etapas'].includes(x.unit)?0:2):'—'}</td></tr>`).join('');const cq=q.slice(13);$('complementaryResults').innerHTML=cq.map(x=>`<div class="field"><label>${x.name}</label><div class="computed-value" style="border:1px solid var(--line,#cbd5ce);border-radius:9px;padding:12px;background:var(--panel,#fff);font-weight:700">${Number.isFinite(x.value)?fmt(x.value,['un.','etapas'].includes(x.unit)?0:2)+' '+x.unit:'—'}</div><div class="subnote">${x.note}</div></div>`).join('');$('csvBtn').disabled=false;$('xlsxBtn').disabled=false;
+}
+function init3D(){
+ const host=$('viewer');scene=new THREE.Scene();scene.background=new THREE.Color(0xf0f3f0);
+ camera=new THREE.PerspectiveCamera(45,host.clientWidth/host.clientHeight,.1,500);camera.position.set(12,9,15);
+ renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));renderer.setSize(host.clientWidth,host.clientHeight);renderer.shadowMap.enabled=true;host.prepend(renderer.domElement);
+ controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.08;controls.target.set(0,3,0);
+ // Sensibilidade da navegação: escala independente para rotação, zoom e pan.
+ const navigationProfiles={1:{rotate:.35,zoom:.55,pan:.4},2:{rotate:.65,zoom:.8,pan:.7},3:{rotate:1,zoom:1,pan:1}};
+ function setNavigationSpeed(level){const profile=navigationProfiles[level]||navigationProfiles[1];controls.rotateSpeed=profile.rotate;controls.zoomSpeed=profile.zoom;controls.panSpeed=profile.pan;document.querySelectorAll('[data-nav-speed]').forEach(btn=>{const active=Number(btn.dataset.navSpeed)===Number(level);btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));});}
+ document.querySelectorAll('[data-nav-speed]').forEach(btn=>btn.addEventListener('click',()=>setNavigationSpeed(Number(btn.dataset.navSpeed))));setNavigationSpeed(1);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x858b84,2));const light=new THREE.DirectionalLight(0xffffff,2.2);light.position.set(8,15,12);scene.add(light);
+ /* Grade de referência removida para deixar a visualização do talude mais limpa. */ modelGroup=new THREE.Group();scene.add(modelGroup);raycaster=new THREE.Raycaster();pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerdown',select3DElement);
+ function syncOrientationCube(){
+ const cube=document.querySelector('.orientation-cube');
+ if(!cube||!camera||!controls)return;
+ const offset=camera.position.clone().sub(controls.target);
+ const horizontal=Math.sqrt(offset.x*offset.x+offset.z*offset.z);
+ const yaw=Math.atan2(offset.x,offset.z)*180/Math.PI;
+ const pitch=Math.atan2(offset.y,Math.max(horizontal,1e-8))*180/Math.PI;
+ cube.style.transform=`rotateX(${-pitch}deg) rotateY(${-yaw}deg)`;
+}
+ function animate(){requestAnimationFrame(animate);controls.update();syncOrientationCube();renderer.render(scene,camera)}animate();
+ resizeObserver=new ResizeObserver(()=>{if(!renderer)return;const w=host.clientWidth,h=host.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)});resizeObserver.observe(host);
+}
+function group(name){const g=new THREE.Group();g.name=name;modelGroup.add(g);layerGroups[name]=g;return g}
+function material(color,opacity=1,wire=false){return new THREE.MeshStandardMaterial({color,transparent:opacity<1,opacity,roughness:.82,metalness:wire?.55:0,side:THREE.DoubleSide,wireframe:wire})}
+function clear3D(){while(modelGroup.children.length){const o=modelGroup.children[0];modelGroup.remove(o);o.traverse?.(n=>{n.geometry?.dispose?.();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}})}layerGroups={};selectedObject=null;selectedOriginalMaterial=null;renderProperties(null)}
+function tagObject(obj,category,type,props={}){obj.userData={category,type,...props};if(elementColorOverrides[category]!==undefined)obj.material.color.set(elementColorOverrides[category]);return obj}
+function addCylinderBetween(parent,a,b,r,color,category,type,props={}){const dir=b.clone().sub(a),len=dir.length();const obj=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,10),material(color));obj.position.copy(a.clone().add(b).multiplyScalar(.5));obj.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());tagObject(obj,category,type,{...props,comprimento_m:len,diametro_mm:r*2000});parent.add(obj);return obj}
+function addWire(parent,a,b,r,color,category,type,props={}){return addCylinderBetween(parent,a,b,r,color,category,type,props)}
+function build3D(d,l){
+ if(!renderer)return;clear3D();
+ const soil=group('soil'),wall=group('wall'),mesh=group('mesh'),nails=group('nails'),vertical=group('vertical'),hardware=group('hardware'),drains=group('drains');
+ const H=d.height,L=d.length,dep=d.depth,t=d.thickness,ang=d.slopeDeg*Math.PI/180,faceLen=H/Math.sin(ang),zShift=H/Math.tan(ang),faceRot=ang-Math.PI/2;
+ const faceZ=y=>-y/Math.tan(ang); // paramento inclina-se para trás no topo
+ const facePoint=(x,y,offset=0)=>new THREE.Vector3(x,y,faceZ(y)+offset);
+ // Bloco de solo simplificado, atrás do paramento inclinado.
+ const soilMat=material(new THREE.Color(d.soilColor),d.transparency);
+ const soilMesh=new THREE.Mesh(new THREE.BoxGeometry(L,H,dep),soilMat);soilMesh.position.set(0,H/2,-dep/2-zShift*.5-t);tagObject(soilMesh,'soil','Bloco de solo',{tipoSolo:d.soilType,altura_m:H,comprimento_m:L,profundidade_m:dep});soil.add(soilMesh);
+ // Face contínua de concreto com inclinação real, não uma placa vertical genérica.
+ const wallMesh=new THREE.Mesh(new THREE.BoxGeometry(L,faceLen,t),material(categoryColors.wall));wallMesh.position.set(0,H/2,-zShift/2-t/2);wallMesh.rotation.x=faceRot;tagObject(wallMesh,'wall','Concreto projetado',{espessura_cm:t*100,area_m2:L*faceLen,volume_m3:L*faceLen*t,inclinacao_graus:d.slopeDeg});wall.add(wallMesh);
+ // Malha quadriculada real, acompanhando a inclinação da face.
+ if(d.meshOn){const m=String(d.meshSpacing||'10x10').match(/[0-9]+(?:[.,][0-9]+)?/g)||['10','10'];const sx=Math.max(.03,parseFloat(m[0].replace(',','.'))/100),sy=Math.max(.03,parseFloat((m[1]||m[0]).replace(',','.'))/100);const wireR=Math.max(.001,d.meshDia/2);
+  for(let x=-L/2;x<=L/2+1e-6;x+=sx){const a=facePoint(x,0,-t*.5),b=facePoint(x,H,-t*.5);addWire(mesh,a,b,wireR,categoryColors.mesh,'mesh','Fio de tela',{espacamento_m:sx,orientacao:'vertical'});}
+  for(let y=0;y<=H+1e-6;y+=sy){const a=facePoint(-L/2,y,-t*.5),b=facePoint(L/2,y,-t*.5);addWire(mesh,a,b,wireR,categoryColors.mesh,'mesh','Fio de tela',{espacamento_m:sy,orientacao:'horizontal'});}
+ }
+ const nailRad=Math.max(d.barDia/2,.003),holeRad=Math.max(d.holeDia/2,.006);
+ l.nails.forEach((n,i)=>{
+   const x=n.x-L/2,y=n.z;const start=facePoint(x,y,t*.35);const a=d.nailAngle*Math.PI/180;
+   const end=new THREE.Vector3(start.x,start.y-d.nailLength*Math.sin(a),start.z-d.nailLength*Math.cos(a));
+   addCylinderBetween(nails,start,end,nailRad,categoryColors.nails,'nails','Grampo inclinado',{id:`GI-${i+1}`,linha:n.ri,indice:i+1,angulo_graus:d.nailAngle,diametro_mm:d.barDiaMm,aco:d.steel,comprimento_informado_m:d.nailLength});
+   // Calda/bainha representada como tubo translúcido, ligeiramente afastado para ser legível.
+   const grout=addCylinderBetween(nails,start.clone().add(new THREE.Vector3(0,0,-.008)),end.clone().add(new THREE.Vector3(0,0,-.008)),holeRad,0xc4bba9,'nails','Furo / calda de injeção',{id:`CALDA-${i+1}`,diametro_furo_mm:d.holeDia*1000});grout.material.transparent=true;grout.material.opacity=.28;
+   // Placa parametrizada com furo central, porca hexagonal e rosca aparente.
+   const plateShape=new THREE.Shape();plateShape.moveTo(-d.plateWidth/2,-d.plateHeight/2);plateShape.lineTo(d.plateWidth/2,-d.plateHeight/2);plateShape.lineTo(d.plateWidth/2,d.plateHeight/2);plateShape.lineTo(-d.plateWidth/2,d.plateHeight/2);plateShape.closePath();
+   const hole=new THREE.Path();hole.absarc(0,0,Math.min(d.barDia/2,Math.min(d.plateWidth,d.plateHeight)*.45),0,Math.PI*2,true);plateShape.holes.push(hole);
+   const plateGeo=new THREE.ExtrudeGeometry(plateShape,{depth:d.plateThickness,bevelEnabled:false,curveSegments:24});plateGeo.translate(0,0,-d.plateThickness/2);
+   const plate=new THREE.Mesh(plateGeo,material(new THREE.Color(d.plateColor||'#1976d2')));plate.position.copy(start);plate.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(0,Math.sin(a),Math.cos(a)).normalize());tagObject(plate,'hardware','Placa de apoio',{id:`PL-${i+1}`,grampo:`GI-${i+1}`,largura_mm:d.plateWidth*1000,altura_mm:d.plateHeight*1000,espessura_mm:d.plateThickness*1000,diametro_furo_mm:d.plateHole*1000,material:'Aço'});hardware.add(plate);
+   const normal=new THREE.Vector3(0,Math.sin(a),Math.cos(a)).normalize();
+   const nutGeo=new THREE.CylinderGeometry(d.nutWidth/2,d.nutWidth/2,d.nutHeight,6,1,false);nutGeo.rotateX(Math.PI/2);const nut=new THREE.Mesh(nutGeo,material(new THREE.Color(d.plateColor||'#1976d2')));nut.position.copy(start.clone().add(normal.clone().multiplyScalar(d.plateThickness/2+d.nutHeight/2)));nut.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);tagObject(nut,'hardware','Porca hexagonal',{id:`PO-${i+1}`,grampo:`GI-${i+1}`,largura_mm:d.nutWidth*1000,altura_mm:d.nutHeight*1000,material:'Aço'});hardware.add(nut);
+   const threadStart=start.clone().add(normal.clone().multiplyScalar(d.plateThickness/2+d.nutHeight)),threadEnd=threadStart.clone().add(normal.clone().multiplyScalar(d.threadLength));addCylinderBetween(hardware,threadStart,threadEnd,Math.max(nailRad*1.05,.004),new THREE.Color(d.plateColor||'#1976d2'),'hardware','Trecho roscado',{id:`RO-${i+1}`,grampo:`GI-${i+1}`,comprimento_rosca_m:d.threadLength});
+ });
+ // Grampos verticais RV: barras realmente verticais, afastadas da tela em profundidade.
+ // O afastamento positivo deve ir da tela para dentro do solo (sentido -Z neste modelo).
+ // Convertemos a distância perpendicular informada em deslocamento Z conforme a inclinação da face.
+ const vSpacing=Math.max(.25,d.spacingH);
+ const vPositions=verticalNailPositions(L,vSpacing);
+ const sinSlope=Math.max(Math.abs(Math.sin(ang)),0.15);
+ const verticalGap=Math.max(.01,d.verticalOffset||.15);
+ const verticalZ=faceZ(H)-t*.5-verticalGap/sinSlope;
+ vPositions.forEach((x,i)=>{
+   const idx=i+1;
+   const start=new THREE.Vector3(x,H,verticalZ);
+   const end=new THREE.Vector3(x,H-d.nailLength,verticalZ);
+   addCylinderBetween(vertical,start,end,nailRad,categoryColors.vertical,'vertical','Grampo vertical',{id:`RV${idx}`,comprimento_informado_m:d.nailLength,orientacao:'vertical',diametro_mm:d.barDiaMm,aco:d.steel,fileira:'vertical',afastamento_tela_cm:verticalGap*100,deslocamento_profundidade_m:verticalGap/sinSlope});
+ });
+ if(d.drainOn){const cols=Math.max(1,Math.floor(L/d.drainSpacing)-1),rows=Math.max(1,Math.floor((H-.5*d.drainSpacing)/d.drainSpacing));const outward=new THREE.Vector3(0,Math.cos(ang),Math.sin(ang)).normalize();for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const x=-L/2+d.drainSpacing+c*d.drainSpacing,y=.5*d.drainSpacing+r*d.drainSpacing;const face=facePoint(x,y,0);const outsideLen=Math.min(0.08,d.drainLength*0.15);const insideLen=Math.max(0.01,d.drainLength-outsideLen);const outerEnd=face.clone().add(outward.clone().multiplyScalar(outsideLen));const innerEnd=face.clone().add(outward.clone().multiplyScalar(-insideLen));addCylinderBetween(drains,outerEnd,innerEnd,Math.max(d.drainDia/2,.006),categoryColors.drains,'drains','Barbacã',{id:`DHP-${r+1}-${c+1}`,diametro_mm:d.drainDia*1000,comprimento_informado_m:d.drainLength,trecho_externo_m:outsideLen,trecho_embutido_m:insideLen,espacamento_m:d.drainSpacing,locacao_referencia:'Vista frontal Talude 2 - DXF/PDF'});}}
+ modelGroup.position.set(0,0,0);const max=Math.max(L,H,dep,d.nailLength,5);controls.target.set(0,H/2,-zShift*.45);camera.position.set(max*1.15,H*.9,max*1.6);camera.near=.01;camera.far=max*100;camera.updateProjectionMatrix();controls.update();
+ document.querySelectorAll('[data-layer]').forEach(c=>{if(layerGroups[c.dataset.layer])layerGroups[c.dataset.layer].visible=c.checked});
+ $('viewerMessage').style.display='none';$('previewState').textContent=`${l.nails.length} grampos inclinados em ${l.rows.length} fileiras + grampos verticais · tela e cabeças modeladas`;
+}
+function restoreSelection(){
+ for(const [obj,mat] of selectionOriginals.entries()){if(obj.material&&mat){obj.material.color.copy(mat.color);obj.material.emissive?.copy(mat.emissive||new THREE.Color(0x000000));}}
+ selectionOriginals.clear();selectedObjects=[];selectedObject=null;renderProperties(null);
+}
+function highlightSelection(obj){if(!obj?.material)return;if(!selectionOriginals.has(obj))selectionOriginals.set(obj,obj.material.clone());obj.material.color.set(0xffb000);if(obj.material.emissive)obj.material.emissive.set(0x553300);}
+function isEffectivelyVisible(obj){let node=obj;while(node){if(node.visible===false)return false;node=node.parent;}return true;}
+function select3DElement(event){if(!renderer||!modelGroup)return;const rect=renderer.domElement.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(modelGroup.children,true).filter(h=>h.object.userData?.type&&isEffectivelyVisible(h.object));if(!hits.length){restoreSelection();return;}restoreSelection();selectedObject=hits[0].object;selectedObjects=[selectedObject];highlightSelection(selectedObject);renderProperties(selectedObject);}
+function renderProperties(obj){const host=$('elementProperties');if(!host)return;if(!obj){$('selectedElementLabel').textContent='Nenhum selecionado';host.innerHTML='<div class="field full selected-tag">Clique em uma peça do modelo 3D para consultar suas propriedades e personalizar sua cor. Pressione Esc para cancelar a seleção.</div>';return;}const u=obj.userData||{};const permanent=elementColorOverrides[obj.uuid]||('#'+(categoryColors[u.category]??0x777777).toString(16).padStart(6,'0'));$('selectedElementLabel').textContent=u.id||u.type||'Elemento';const categoryLabels={soil:'Solo',wall:'Concreto projetado',mesh:'Tela metálica',nails:'Grampo inclinado / aço',vertical:'Grampo vertical',hardware:'Placa e fixações',drains:'Drenagem'};const props=Object.entries(u).filter(([k,v])=>!['category','type','customColor'].includes(k)&&v!==undefined&&v!==null);host.innerHTML=`<div class="field full"><label>Tipo de elemento</label><div class="computed-value">${escapeHtml(u.type||'Elemento')}</div></div><div class="field"><label>Categoria</label><div class="computed-value">${escapeHtml(categoryLabels[u.category]||u.category||'—')}</div></div><div class="field"><label>Cor permanente</label><input id="selectedColor" type="color" value="${permanent}"></div><div class="field full"><button class="btn small" id="selectSimilar" type="button">Selecionar todos os elementos iguais</button> <button class="btn small" id="hideSimilar" type="button">Ocultar elementos iguais</button></div>${props.map(([k,v])=>`<div class="field"><label>${escapeHtml(k.replaceAll('_',' '))}</label><div class="computed-value">${escapeHtml(String(v))}</div></div>`).join('')}<div class="field full"><button class="btn small" id="resetElementColor" type="button">Usar cor da categoria</button></div>`;
+ $('selectedColor').addEventListener('input',e=>{const color=e.target.value;selectedObjects.forEach(o=>{elementColorOverrides[o.uuid]=color;o.userData.customColor=color;const original=selectionOriginals.get(o);if(original)original.color.set(color);if(o!==selectedObject&&o.material)o.material.color.set(color)});if(selectionOriginals.has(obj))selectionOriginals.get(obj).color.set(color);});
+ $('resetElementColor').addEventListener('click',()=>{selectedObjects.forEach(o=>{delete elementColorOverrides[o.uuid];o.material.color.set(categoryColors[o.userData.category]??0x777777);});restoreSelection();});
+ $('selectSimilar').addEventListener('click',()=>{restoreSelection();const matches=[];modelGroup.traverse(o=>{if(o.userData?.type===u.type&&o.userData?.category===u.category)matches.push(o)});selectedObjects=matches;selectedObject=obj;matches.forEach(highlightSelection);renderProperties(obj);});
+ $('hideSimilar').addEventListener('click',()=>{modelGroup.traverse(o=>{if(o.userData?.type===u.type&&o.userData?.category===u.category)o.visible=false});restoreSelection();});
+}
+function resetAppearance(){restoreSelection();Object.keys(elementColorOverrides).forEach(k=>delete elementColorOverrides[k]);Object.assign(categoryColors,defaultCategoryColors);document.querySelectorAll('[data-color-category]').forEach(inp=>{const c=categoryColors[inp.dataset.colorCategory]??0x777777;inp.value='#'+c.toString(16).padStart(6,'0')});document.querySelectorAll('[data-layer]').forEach(c=>{c.checked=true;if(layerGroups[c.dataset.layer])layerGroups[c.dataset.layer].visible=true});if(modelGroup)modelGroup.traverse(o=>{if(o.isMesh&&o.userData?.category){const c=categoryColors[o.userData.category];if(c!==undefined)o.material.color.set(c);o.visible=true}});if(currentData)build3D(currentData.d,currentData.l);}
+
+function refresh(){
+ const d=getData(),v=validate(d,true);setError(v.errors.join(' '));setWarnings(v.warnings);$('generateBtn').disabled=!isVisibleValid(d)||v.errors.length>0;
+ if(v.errors.length){$('viewerMessage').style.display='flex';$('previewState').textContent='Aguardando dados válidos';$('validationSummary').textContent='Corrija os campos destacados para validar a geometria.';return}
+ const l=layout(d);currentData={d,l};build3D(d,l);updateQuantities(d,l);
+ $('validationSummary').innerHTML=`<strong style="color:#245b31">Sem erros bloqueantes detectados.</strong><br>${v.warnings.length?`<span style="color:#8a5b00">Avisos: ${v.warnings.map(escapeHtml).join(' ')}</span>`:'Nenhum aviso automático. Isso não representa validação geotécnica.'}<br><span class="muted">Fileiras de grampos inclinados: ${d.rowCount} + grampos verticais separados · posições por linha: até ${l.cols.length} · grampos inclinados calculados: ${l.nails.length}.</span>`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function resetVisual(){clear3D();$('viewerMessage').style.display='flex';$('previewState').textContent='Aguardando parâmetros';$('statNails').textContent='—';$('statBars').textContent='—';$('statWeight').textContent='—';$('statConcrete').textContent='—';$('quantityRows').innerHTML='<tr><td colspan="3" class="muted">Os quantitativos aparecerão após o preenchimento.</td></tr>';$('csvBtn').disabled=true;$('xlsxBtn').disabled=true;$('validationSummary').textContent='Preencha os dados para verificar consistência e avisos.'}
+function syncConditionals(){
+ $('barOtherWrap').hidden=val('barDia')!=='outro';$('steelOtherWrap').hidden=val('steel')!=='outro';
+ const mesh=checked('meshOn')==='sim';$('meshDia').disabled=!mesh;$('meshSpacing').disabled=!mesh;
+ const drain=checked('drainOn')==='sim';['drainDia','drainLength','drainSpacing'].forEach(id=>$(id).disabled=!drain);
+}
+function toConfig(){const out={};document.querySelectorAll('#form input:not([type=radio]):not([type=file]),#form select').forEach(e=>{out[e.id]=e.value});out.meshOn=checked('meshOn');out.drainOn=checked('drainOn');return out}
+function applyConfig(c){
+ Object.keys(c||{}).forEach(id=>{if($(id)&&typeof c[id]!=='object')$(id).value=c[id]});
+ if(c.meshOn)document.querySelector(`input[name="meshOn"][value="${c.meshOn}"]`).checked=true;
+ if(c.drainOn)document.querySelector(`input[name="drainOn"][value="${c.drainOn}"]`).checked=true;
+ syncConditionals();refresh();
+}
+function download(content,name,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function cleanName(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60)||'Projeto'}
+function csvExport(){if(!currentData)return;const q=quantities(currentData.d,currentData.l);const csv='Indicador;Unidade;Quantidade;Observação\r\n'+q.map(x=>`${x.name};${x.unit};${String(x.value).replace('.',',')};${(x.note||'').replaceAll(';',',')}`).join('\r\n');download('\ufeff'+csv,`Quantitativos_SoloGrampeado_${cleanName(currentData.d.projectName)}.csv`,'text/csv;charset=utf-8')}
+async function loadExcelJS(){if(window.ExcelJS)return window.ExcelJS;return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';script.onload=()=>window.ExcelJS?resolve(window.ExcelJS):reject(new Error('Biblioteca Excel não carregada'));script.onerror=()=>reject(new Error('Não foi possível carregar o gerador Excel. Verifique sua conexão com a internet.'));document.head.appendChild(script)})}
+function monteLogoPng(){return new Promise((resolve,reject)=>{const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="420" height="150" viewBox="0 0 420 150"><rect width="420" height="150" fill="#ffffff"/><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"><g stroke="#30372c"><path d="M12 40 H45 C58 40 67 32 78 21 L101 8 H150"/><path d="M12 62 H52 C65 62 75 54 86 43 L108 30 H150"/><path d="M12 84 H58 C71 84 81 76 92 65 L115 52 H150"/><path d="M12 106 H64 C77 106 87 98 98 87 L121 74 H150"/></g><g stroke="#bd7448"><path d="M96 25 L145 47 M82 49 L131 71 M68 73 L117 95"/></g></g><text x="174" y="76" font-family="Arial,sans-serif" font-size="49" font-weight="700" letter-spacing="7" fill="#30372c">MONTE</text><text x="177" y="105" font-family="Arial,sans-serif" font-size="13" font-weight="600" letter-spacing="2.5" fill="#737e5d">MODELAGEM GEOTÉCNICA</text></svg>`;const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=840;c.height=300;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,840,300);resolve(c.toDataURL('image/png').split(',')[1])};img.onerror=reject;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)})}
+async function excelExport(){if(!currentData)return;const btn=$('xlsxBtn');btn.disabled=true;btn.textContent='Preparando Excel…';try{const ExcelJS=await loadExcelJS();const wb=new ExcelJS.Workbook();wb.creator='MONTE — Modelagem Geotécnica';wb.subject='Relatório de quantitativos estimados';wb.title=`Quantitativos — ${currentData.d.projectName}`;wb.created=new Date();const ws=wb.addWorksheet('Quantitativos',{views:[{state:'frozen',ySplit:7}]});ws.columns=[{header:'INDICADOR',key:'name',width:42},{header:'QUANTIDADE',key:'value',width:18},{header:'UNIDADE',key:'unit',width:14},{header:'OBSERVAÇÃO / PREMISSA',key:'note',width:92}];ws.mergeCells('A1:D1');ws.getRow(1).height=68;ws.getCell('A1').fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFFFFFFF'}};ws.getCell('A1').alignment={vertical:'middle',horizontal:'left'};const logo=await monteLogoPng();const imageId=wb.addImage({base64:logo,extension:'png'});ws.addImage(imageId,{tl:{col:0.08,row:0.08},ext:{width:230,height:82}});ws.mergeCells('A2:D2');ws.getCell('A2').value='RELATÓRIO DE QUANTITATIVOS';ws.getCell('A2').font={name:'Arial',size:16,bold:true,color:{argb:'FF30372C'}};ws.getCell('A2').alignment={vertical:'middle'};ws.getRow(2).height=30;ws.mergeCells('A3:D3');ws.getCell('A3').value=`Projeto: ${currentData.d.projectName||'Não informado'}`;ws.getCell('A3').font={bold:true,color:{argb:'FF46513F'}};ws.getRow(3).height=23;ws.mergeCells('A4:B4');ws.getCell('A4').value=`Data de extração: ${new Date().toLocaleDateString('pt-BR')}`;ws.mergeCells('C4:D4');ws.getCell('C4').value='Ferramenta: MONTE · Modelagem Geotécnica';ws.getRow(4).font={italic:true,color:{argb:'FF68716D'},size:10};ws.getRow(5).height=9;const header=ws.getRow(6);header.values=['INDICADOR','QUANTIDADE','UNIDADE','OBSERVAÇÃO / PREMISSA'];header.height=28;header.eachCell(c=>{c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF30372C'}};c.font={bold:true,color:{argb:'FFFFFFFF'},size:10};c.alignment={vertical:'middle',horizontal:'left'};c.border={bottom:{style:'medium',color:{argb:'FFB66A3C'}}}});const q=quantities(currentData.d,currentData.l);q.forEach((item,i)=>{const r=ws.addRow([item.name,Number.isFinite(item.value)?item.value:null,item.unit,item.note||'']);r.height=32;r.eachCell((c,col)=>{c.font={name:'Arial',size:10,color:{argb:'FF30372C'}};c.alignment={vertical:'middle',horizontal:col===2?'center':col===3?'center':'left',wrapText:true};c.border={bottom:{style:'thin',color:{argb:'FFE2E6E0'}}};if(i%2===1)c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF3F1E9'}}});r.getCell(2).numFmt='#,##0.00';});const last=6+q.length;ws.autoFilter={from:'A6',to:`D${last}`};ws.mergeCells(`A${last+2}:D${last+2}`);ws.getCell(`A${last+2}`).value='NOTA TÉCNICA: Os quantitativos são estimativas calculadas a partir dos parâmetros informados e das premissas indicadas. Devem ser conferidos pelo responsável técnico e não substituem projeto executivo, especificações ou plano de execução.';ws.getCell(`A${last+2}`).font={italic:true,size:9,color:{argb:'FF76523D'}};ws.getCell(`A${last+2}`).alignment={wrapText:true,vertical:'middle'};ws.getCell(`A${last+2}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF8F3EC'}};ws.getRow(last+2).height=42;ws.pageSetup={orientation:'landscape',fitToPage:true,fitToWidth:1,fitToHeight:0,paperSize:ws.PAPER_A4};ws.pageSetup.margins={left:0.25,right:0.25,top:0.5,bottom:0.5,header:0.2,footer:0.2};const buffer=await wb.xlsx.writeBuffer();download(new Blob([buffer]),`Relatorio_MONTE_${cleanName(currentData.d.projectName)}.xlsx`,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');}catch(err){console.error(err);alert(err.message||'Não foi possível gerar o relatório Excel.');}finally{btn.disabled=false;btn.textContent='Exportar relatório Excel (.xlsx)'}}
+function ratioFromDeg(deg){return `1:${fmt(1/Math.tan(deg*Math.PI/180),2)}`}
+function degFromRatio(s){const m=s.match(/^\s*([\d.,]+)\s*:\s*([\d.,]+)\s*$/);if(!m)return NaN;const h=parseFloat(m[1].replace(',','.')),v=parseFloat(m[2].replace(',','.'));if(!(h>0&&v>0))return NaN;return Math.atan2(v,h)*180/Math.PI}
+function ifcString(s){return String(s??'').replace(/\\/g,'\\\\').replace(/'/g,"''").replace(/\r?\n/g,' ')}
+function ifcGuid(){const chars='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$';let s='';for(let i=0;i<22;i++)s+=chars[Math.floor(Math.random()*chars.length)];return s}
+function ifcNum(n){if(!Number.isFinite(n))return '0.';return Number(n.toFixed(6)).toString().includes('.')?Number(n.toFixed(6)).toString():Number(n.toFixed(6)).toString()+'.'}
+/*
+ * Geração IFC STEP: esta rotina emite uma estrutura espacial mínima e representações
+ * extrudadas para compatibilização preliminar. IFC é um esquema EXPRESS rigoroso:
+ * validar o arquivo em um validador IFC e nos aplicativos-alvo antes de uso profissional.
+ */
+function generateIFC(d,l){
+ const lines=[];let id=0;const add=(type,args)=>{const n=++id;lines.push(`#${n}=${type}(${args});`);return n};
+ const guid=()=>`'${ifcGuid()}'`, q=x=>`'${ifcString(String(x??''))}'`, R=n=>`#${n}`;
+ // O preview Three.js usa Y-up; IFC usa Z-up.
+ // A conversão deve ocorrer SOMENTE nas colocações globais dos produtos.
+ // A geometria SweptSolid permanece no sistema local IFC (XY + extrusão em +Z).
+ const toIFC=(x,y,z)=>[x,-z,y];
+ const P=(x,y,z)=>add('IFCCARTESIANPOINT',`(${ifcNum(x)},${ifcNum(y)},${ifcNum(z)})`); // ponto local, sem rotação
+ const D=(x,y,z)=>add('IFCDIRECTION',`(${ifcNum(x)},${ifcNum(y)},${ifcNum(z)})`); // direção local, sem rotação
+ const PW=(x,y,z)=>{const v=toIFC(x,y,z);return add('IFCCARTESIANPOINT',`(${ifcNum(v[0])},${ifcNum(v[1])},${ifcNum(v[2])})`)};
+ const DW=(x,y,z)=>{const v=toIFC(x,y,z);return add('IFCDIRECTION',`(${ifcNum(v[0])},${ifcNum(v[1])},${ifcNum(v[2])})`)};
+ const norm=v=>{const m=Math.hypot(...v)||1;return v.map(x=>x/m)};
+ const axis=(origin,z=[0,0,1],x=[1,0,0])=>add('IFCAXIS2PLACEMENT3D',`${R(origin)},${R(D(...norm(z)))},${R(D(...norm(x)))}`);
+ const placementAxis=(origin,z=[0,0,1],x=[1,0,0])=>add('IFCAXIS2PLACEMENT3D',`${R(origin)},${R(DW(...norm(z)))},${R(DW(...norm(x)))}`);
+ const owner=add('IFCOWNERHISTORY','$,$,$,.ADDED.,$,$,$,0');
+ const world=P(0,0,0), worldAxis=axis(world), context=add('IFCGEOMETRICREPRESENTATIONCONTEXT',`'Model','Model',3,1.E-5,${R(worldAxis)},$`);
+ const body=add('IFCGEOMETRICREPRESENTATIONSUBCONTEXT',`'Body','Model',*,${R(context)},$,$,$,$,.MODEL_VIEW.,$`);
+ const units=add('IFCUNITASSIGNMENT',`(${R(add('IFCSIUNIT',`* ,.LENGTHUNIT.,$,.METRE.`))},${R(add('IFCSIUNIT',`* ,.AREAUNIT.,$,.SQUARE_METRE.`))},${R(add('IFCSIUNIT',`* ,.VOLUMEUNIT.,$,.CUBIC_METRE.`))},${R(add('IFCSIUNIT',`* ,.PLANEANGLEUNIT.,$,.RADIAN.`))})`);
+ const project=add('IFCPROJECT',`${guid()},${R(owner)},${q(d.projectName)},$,$,$,$,(${R(context)}),${R(units)}`);
+ const site=add('IFCSITE',`${guid()},${R(owner)},${q(d.locationName||'Local da obra')},$,$,$,$,$,.ELEMENT.,$,$,$,$,$`);
+ const building=add('IFCBUILDING',`${guid()},${R(owner)},${q(d.projectName)},$,$,$,$,$,.ELEMENT.,$,$,$`);
+ const storey=add('IFCBUILDINGSTOREY',`${guid()},${R(owner)},'Modelo',$,$,$,$,$,.ELEMENT.,${ifcNum(d.base||0)}`);
+ const agg=(a,b)=>add('IFCRELAGGREGATES',`${guid()},${R(owner)},$,$,${R(a)},(${b.map(R).join(',')})`);agg(project,[site]);agg(site,[building]);agg(building,[storey]);
+ const matCache=new Map();
+ function material(el,name){let m=matCache.get(name);if(!m){m=add('IFCMATERIAL',q(name));matCache.set(name,m)}add('IFCRELASSOCIATESMATERIAL',`${guid()},${R(owner)},$,$,(${R(el)}),${R(m)}`)}
+ function product(name,kind,origin,zdir,xdir,profile,solid,materialName){
+   const pl=add('IFCLOCALPLACEMENT',`$ ,${R(placementAxis(PW(...origin),zdir,xdir))}`.replace('$ ','$'));
+   const rep=add('IFCSHAPEREPRESENTATION',`${R(body)},'Body','SweptSolid',(${R(solid)})`);
+   const shape=add('IFCPRODUCTDEFINITIONSHAPE',`$,$,(${R(rep)})`);
+   const el=add('IFCBUILDINGELEMENTPROXY',`${guid()},${R(owner)},${q(name)},$,$,${R(pl)},${R(shape)},$,.NOTDEFINED.`);
+   add('IFCRELCONTAINEDINSPATIALSTRUCTURE',`${guid()},${R(owner)},$,$,(${R(el)}),${R(storey)}`);material(el,materialName);return el;
+ }
+ function box(name,center,dx,dy,dz,zdir,xdir,mat){
+   const profAx=axis(P(0,0,0));const prof=add('IFCRECTANGLEPROFILEDEF',`.AREA.,$ ,${R(profAx)},${ifcNum(dx)},${ifcNum(dy)}`.replace('$ ','$'));
+   const solidPos=axis(P(0,0,-dz/2));const solid=add('IFCEXTRUDEDAREASOLID',`${R(prof)},${R(solidPos)},${R(D(0,0,1))},${ifcNum(dz)}`);
+   return product(name,'proxy',center,zdir,xdir,prof,solid,mat);
+ }
+ function rod(name,a,b,r,mat){
+   const v=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],len=Math.hypot(...v);if(!(len>0))return null;
+   const z=norm(v),x=Math.abs(z[0])>.95?[0,1,0]:[1,0,0];const cax=axis(P(0,0,0));const circle=add('IFCCIRCLEPROFILEDEF',`.AREA.,$ ,${R(cax)},${ifcNum(Math.max(r,.0005))}`.replace('$ ','$'));
+   const solpos=axis(P(0,0,0));const solid=add('IFCEXTRUDEDAREASOLID',`${R(circle)},${R(solpos)},${R(D(0,0,1))},${ifcNum(len)}`);
+   return product(name,'proxy',a,z,x,circle,solid,mat);
+ }
+ function hexNut(name,center,width,height,zdir,mat){
+   const pts=[];for(let i=0;i<6;i++){const a=Math.PI/3*i;pts.push(add('IFCCARTESIANPOINT',`(${ifcNum(width*.5*Math.cos(a))},${ifcNum(width*.5*Math.sin(a))})`))}
+   pts.push(pts[0]);const poly=add('IFCPOLYLINE',`(${pts.map(R).join(',')})`);
+   const prof=add('IFCARBITRARYCLOSEDPROFILEDEF',`.AREA.,$ ,${R(poly)}`.replace('$ ','$'));
+   const solpos=axis(P(0,0,-height/2));const solid=add('IFCEXTRUDEDAREASOLID',`${R(prof)},${R(solpos)},${R(D(0,0,1))},${ifcNum(height)}`);
+   return product(name,'proxy',center,zdir,[1,0,0],prof,solid,mat);
+ }
+ const L=d.length,H=d.height,dep=d.depth,t=d.thickness,ang=d.slopeDeg*Math.PI/180;
+ const faceLen=H/Math.sin(ang),zShift=H/Math.tan(ang),faceZ=y=>-y/Math.tan(ang);
+ // Terreno: mantém o bloco de solo exibido no preview, com as mesmas dimensões e posição.
+ box(`Solo - ${d.soilType}`,[0,H/2,-dep/2-zShift*.5-t],L,H,dep,[0,0,1],[1,0,0],d.soilType||'Solo');
+ // Paramento: prisma retangular rotacionado para acompanhar a inclinação configurada.
+ const rot=ang-Math.PI/2;const wallZ=[0,-Math.sin(rot),Math.cos(rot)];
+ box('Paramento - Concreto projetado',[0,H/2,-zShift/2-t/2],L,faceLen,t,wallZ,[1,0,0],'Concreto projetado');
+ const facePoint=(x,y,offset=0)=>[x,y,faceZ(y)+offset];
+ // Tela: fios individuais nas duas direções, acompanhando a face inclinada.
+ if(d.meshOn){const mm=String(d.meshSpacing||'10x10').match(/[0-9]+(?:[.,][0-9]+)?/g)||['10','10'];const sx=Math.max(.03,parseFloat(mm[0].replace(',','.'))/100),sy=Math.max(.03,parseFloat((mm[1]||mm[0]).replace(',','.'))/100),r=Math.max(.0005,d.meshDia/2);
+   let k=0;for(let x=-L/2;x<=L/2+1e-6;x+=sx)rod(`Tela - fio vertical ${++k}`,facePoint(x,0,-t*.5),facePoint(x,H,-t*.5),r,'Aço '+d.steel);
+   k=0;for(let y=0;y<=H+1e-6;y+=sy)rod(`Tela - fio horizontal ${++k}`,facePoint(-L/2,y,-t*.5),facePoint(L/2,y,-t*.5),r,'Aço '+d.steel);
+ }
+ // Grampos frontais: origem e vetor iguais aos usados na cena 3D.
+ const a=d.nailAngle*Math.PI/180,barR=Math.max(d.barDia/2,.0005);
+ l.nails.forEach((n,i)=>{
+   const st=facePoint(n.x-L/2,n.z,t*.35),en=[st[0],st[1]-d.nailLength*Math.sin(a),st[2]-d.nailLength*Math.cos(a)];
+   const normal=[0,Math.sin(a),Math.cos(a)];
+   const threadStart=[st[0]+normal[0]*(d.plateThickness/2+d.nutHeight),st[1]+normal[1]*(d.plateThickness/2+d.nutHeight),st[2]+normal[2]*(d.plateThickness/2+d.nutHeight)];
+   const threadEnd=[threadStart[0]+normal[0]*d.threadLength,threadStart[1]+normal[1]*d.threadLength,threadStart[2]+normal[2]*d.threadLength];
+   // Barra contínua: atravessa o paramento, a placa e a porca, prolongando-se no trecho roscado.
+   rod(`Grampo inclinado ${i+1} - barra contínua com passagem pela placa`,threadEnd,en,barR,'Aço '+d.steel);
+   // Placa centrada no eixo do grampo, com furo coaxial implícito pela barra que a atravessa.
+   box(`Placa de apoio ${i+1}`,st,d.plateWidth,d.plateHeight,d.plateThickness,normal,[1,0,0],'Aço '+d.steel);
+   // Porca hexagonal e trecho roscado exportados como sólidos individuais.
+   const nutCenter=[st[0]+normal[0]*(d.plateThickness/2+d.nutHeight/2),st[1]+normal[1]*(d.plateThickness/2+d.nutHeight/2),st[2]+normal[2]*(d.plateThickness/2+d.nutHeight/2)];
+   hexNut(`Porca hexagonal ${i+1}`,nutCenter,d.nutWidth,d.nutHeight,normal,'Aço '+d.steel);
+   rod(`Trecho roscado ${i+1}`,threadStart,threadEnd,Math.max(barR*1.05,.0005),'Aço '+d.steel);
+ });
+ // Grampos verticais exibidos no preview (não fazem parte de l.nails).
+ const vSpacing=Math.max(.25,d.spacingH),vPositions=verticalNailPositions(L,vSpacing),sinSlope=Math.max(Math.abs(Math.sin(ang)),.15),verticalGap=Math.max(.01,d.verticalOffset||.15),verticalZ=faceZ(H)-t*.5-verticalGap/sinSlope;
+ vPositions.forEach((x,i)=>{const st=[x,H,verticalZ],en=[x,H-d.nailLength,verticalZ];rod(`Grampo vertical RV${i+1}`,st,en,barR,'Aço '+d.steel)});
+ // Barbacãs: atravessam a face e ficam parcialmente embutidos, orientados como no preview.
+ if(d.drainOn){const rows=Math.max(1,Math.floor((H-.5*d.drainSpacing)/d.drainSpacing)),cols=Math.max(1,Math.floor(L/d.drainSpacing)-1);const outward=[0,Math.cos(ang),Math.sin(ang)],outside=Math.min(.08,d.drainLength*.15),inside=Math.max(.01,d.drainLength-outside);let di=0;for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const x=-L/2+d.drainSpacing+c*d.drainSpacing,y=.5*d.drainSpacing+r*d.drainSpacing,face=facePoint(x,y,0);const out=[face[0]+outward[0]*outside,face[1]+outward[1]*outside,face[2]+outward[2]*outside],inn=[face[0]-outward[0]*inside,face[1]-outward[1]*inside,face[2]-outward[2]*inside];rod(`Barbacã ${++di}`,out,inn,Math.max(d.drainDia/2,.0005),'Tubo de drenagem')}}
+ const date=new Date().toISOString();
+ const schema=d.schema==='IFC4'?'IFC4':'IFC2X3';
+ return `ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION(('ViewDefinition [CoordinationView_V2.0]'),'2;1');\nFILE_NAME('${cleanName(d.projectName)}.ifc','${date}',('${ifcString(d.author)}'),('MONTE'),'MONTE','MONTE','');\nFILE_SCHEMA(('${schema}'));\nENDSEC;\nDATA;\n${lines.join('\n')}\nENDSEC;\nEND-ISO-10303-21;\n`;
+}
+function exportIFC(){
+ if(!currentData)return;const {d,l}=currentData;const v=validate(d,true);if(v.errors.length){setError(v.errors.join(' '));return}
+ try{const content=generateIFC(d,l);download(content,`SoloGrampeado_${cleanName(d.projectName)}_${new Date().toISOString().slice(0,10)}.ifc`,'application/x-step');setError('');setWarnings(v.warnings);alert('Arquivo IFC gerado com geometria local IFC em Z-up e conversão aplicada somente às colocações globais. Valide no Navisworks/Revit antes de uso profissional; as placas, porcas hexagonais, barras contínuas e trechos roscados agora são incluídos como elementos IFC individuais; valide dimensões e encaixes no Navisworks. Valide no Revit/BIMvision antes de uso profissional.');}
+ catch(e){console.error(e);setError('Não foi possível gerar o IFC: '+e.message)}
+}
+function ratioInputUpdate(){const d=num('slopeDeg');if(Number.isFinite(d)&&d>0&&d<90)$('slopeRatio').value=ratioFromDeg(d);else if(d===90)$('slopeRatio').value='0:1'}
+$('slopeDeg').addEventListener('input',()=>{ratioInputUpdate();refresh()});
+$('slopeRatio').addEventListener('change',()=>{const d=degFromRatio(val('slopeRatio'));if(Number.isFinite(d)){$('slopeDeg').value=d.toFixed(2);refresh()}else if(val('slopeRatio'))alert('Use a proporção no formato H:V, por exemplo 1:2.')});
+$('plateColor').addEventListener('input',()=>{categoryColors.hardware=new THREE.Color(val('plateColor')).getHex();refresh()});
+$('soilType').addEventListener('change',()=>{if(soilColors[val('soilType')])$('soilColor').value=soilColors[val('soilType')];refresh()});
+$('transparency').addEventListener('input',()=>{$('transparencyVal').textContent=val('transparency')+'%';refresh()});
+document.querySelectorAll('#form input,#form select').forEach(e=>e.addEventListener('input',()=>{syncConditionals();refresh()}));
+document.querySelectorAll('input[name="meshOn"],input[name="drainOn"]').forEach(e=>e.addEventListener('change',()=>{syncConditionals();refresh()}));
+$('generateBtn').addEventListener('click',exportIFC);$('csvBtn').addEventListener('click',csvExport);$('xlsxBtn').addEventListener('click',excelExport);
+$('saveConfig').addEventListener('click',()=>download(JSON.stringify(toConfig(),null,2),`Configuracao_SoloGrampeado_${cleanName(val('projectName'))||'Projeto'}.json`,'application/json'));
+$('loadConfig').addEventListener('click',()=>$('configFile').click());
+$('configFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{applyConfig(JSON.parse(await f.text()))}catch(err){alert('JSON inválido ou incompatível. Verifique o arquivo.')}e.target.value=''});
+$('clearBtn').addEventListener('click',()=>{if(!confirm('Limpar todos os campos do formulário?'))return;$('form').reset();document.querySelectorAll('#form input[type=number],#form input[type=text]').forEach(e=>{if(e.id!=='units')e.value=''});$('soilColor').value='#7f6352';$('plateColor').value='#1976d2';categoryColors.hardware=0x1976d2;$('transparencyVal').textContent='48%';syncConditionals();currentData=null;resetVisual();refresh()});
+document.querySelectorAll('[data-layer]').forEach(c=>c.addEventListener('change',()=>{const g=layerGroups[c.dataset.layer];if(g)g.visible=c.checked}));
+document.querySelectorAll('[data-color-category]').forEach(inp=>inp.addEventListener('input',()=>{const cat=inp.dataset.colorCategory;const hex=new THREE.Color(inp.value).getHex();categoryColors[cat]=hex;if(cat==='nails')categoryColors.vertical=hex;if(modelGroup)modelGroup.traverse(o=>{if(o.isMesh&&o.userData?.category===cat){if(!elementColorOverrides[o.uuid])o.material.color.set(hex)}else if(o.isMesh&&cat==='nails'&&o.userData?.category==='vertical'&&!elementColorOverrides[o.uuid])o.material.color.set(hex)});if(selectedObject)renderProperties(selectedObject);}));
+$('resetAppearance').addEventListener('click',()=>{if(confirm('Restaurar as cores padrão e reexibir todos os elementos? Os parâmetros do projeto serão preservados.'))resetAppearance()});window.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();restoreSelection();}});
+function setCubeView(view){if(!camera||!controls)return;const d=currentData?.d;if(!d)return;const m=Math.max(d.length,d.height,d.depth,5),cy=d.height/2;const dist=m*2.5;const dirs={front:[0,0,1],back:[0,0,-1],right:[1,0,0],left:[-1,0,0],top:[0,1,0],bottom:[0,-1,0],iso:[1,.72,1],frontTop:[0,.72,1],frontBottom:[0,-.72,1],frontLeft:[-.72,0,1],frontRight:[.72,0,1],backTop:[0,.72,-1],backBottom:[0,-.72,-1],backLeft:[-.72,0,-1],backRight:[.72,0,-1],rightTop:[1,.72,0],rightBottom:[1,-.72,0],leftTop:[-1,.72,0],leftBottom:[-1,-.72,0]};const v=dirs[view]||dirs.iso;const dir=new THREE.Vector3(v[0],v[1],v[2]).normalize();camera.position.copy(new THREE.Vector3(0,cy,0).addScaledVector(dir,dist));controls.target.set(0,cy,0);camera.up.set(0,1,0);if(view==='top'||view==='bottom'){camera.up.set(0,0,view==='top'?-1:1)}camera.lookAt(controls.target);controls.update();
+ const cube=document.querySelector('.orientation-cube');const cubeRot={front:'rotateX(0deg) rotateY(0deg)',back:'rotateX(0deg) rotateY(180deg)',right:'rotateX(0deg) rotateY(-90deg)',left:'rotateX(0deg) rotateY(90deg)',top:'rotateX(-90deg) rotateY(0deg)',bottom:'rotateX(90deg) rotateY(0deg)',iso:'rotateX(-25deg) rotateY(-35deg)',frontTop:'rotateX(-38deg) rotateY(0deg)',frontBottom:'rotateX(38deg) rotateY(0deg)',frontLeft:'rotateX(0deg) rotateY(38deg)',frontRight:'rotateX(0deg) rotateY(-38deg)',backTop:'rotateX(-38deg) rotateY(180deg)',backBottom:'rotateX(38deg) rotateY(180deg)',backLeft:'rotateX(0deg) rotateY(142deg)',backRight:'rotateX(0deg) rotateY(218deg)',rightTop:'rotateX(-38deg) rotateY(-90deg)',rightBottom:'rotateX(38deg) rotateY(-90deg)',leftTop:'rotateX(-38deg) rotateY(90deg)',leftBottom:'rotateX(38deg) rotateY(90deg)'};if(cube)cube.style.transform=cubeRot[view]||cubeRot.iso;document.querySelectorAll('[data-cube-view]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.cubeView===view)));}
+document.querySelectorAll('[data-cube-view]').forEach(b=>b.addEventListener('click',()=>setCubeView(b.dataset.cubeView)));
+let cubeTurnState={h:0,v:0};const cubeTurnViews={h:['front','right','back','left'],v:['front','frontTop','top','backTop','back','backBottom','bottom','frontBottom']};document.querySelectorAll('[data-cube-turn]').forEach(b=>b.addEventListener('click',()=>{const dir=b.dataset.cubeTurn;const current=document.querySelector('[data-cube-view][aria-pressed="true"]')?.dataset.cubeView||'iso';if(dir==='left'||dir==='right'){let i=cubeTurnViews.h.indexOf(current);if(i<0)i=0;i=(i+(dir==='right'?1:3))%4;cubeTurnState.h=i;setCubeView(cubeTurnViews.h[i]);}else{let i=cubeTurnViews.v.indexOf(current);if(i<0)i=0;i=(i+(dir==='down'?1:cubeTurnViews.v.length-1))%cubeTurnViews.v.length;setCubeView(cubeTurnViews.v[i]);}}));
+if(window.THREE&&THREE.OrbitControls){init3D()}else{$('viewerMessage').innerHTML='<div><strong>Visualização 3D indisponível</strong>Não foi possível carregar o motor 3D ou os controles de órbita. Verifique a conexão com a internet e recarregue a página.</div>'}
+syncConditionals();refresh();
+})();
+</script>
+</div><!-- appShell -->
+<script>
+(function(){function enter(){var welcome=document.getElementById("welcomeScreen"),app=document.getElementById("appShell");welcome.style.display="none";app.style.display="block";window.scrollTo({top:0,behavior:"instant"});window.dispatchEvent(new Event("resize"));setTimeout(function(){window.dispatchEvent(new Event("resize"));},250)}document.getElementById("enterApp").addEventListener("click",enter);document.getElementById("enterAppFooter").addEventListener("click",enter);})();
+</script>
+</body>
+</html>
